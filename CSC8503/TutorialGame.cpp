@@ -475,12 +475,11 @@ bool TutorialGame::SelectObject() {
 			}
 
 			Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
-
 			RayCollision closestCollision;
 			if (world->Raycast(ray, closestCollision, true)) {
 				selectionObject = (GameObject*)closestCollision.node;
-
 				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+				Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(1, 0, 1, 1), 2000);
 				return true;
 			}
 			else {
