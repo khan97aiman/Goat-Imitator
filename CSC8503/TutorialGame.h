@@ -66,9 +66,8 @@ namespace NCL {
 			GameObject* selectionObject = nullptr;
 
 			std::map<std::string, MeshGeometry*> meshes;
-
-			TextureBase*	basicTex	= nullptr;
-			ShaderBase*		basicShader = nullptr;
+			std::map<std::string, TextureBase*> textures;
+			std::map<std::string, ShaderBase*> shaders;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;

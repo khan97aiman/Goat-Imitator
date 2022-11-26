@@ -45,8 +45,8 @@ void TutorialGame::InitialiseAssets() {
 	meshes.insert(std::make_pair("bonusMesh", renderer->LoadMesh("apple.msh")));
 	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
 
-	basicTex	= renderer->LoadTexture("checkerboard.png");
-	basicShader = renderer->LoadShader("scene.vert", "scene.frag");
+	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
+	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 
 	InitCamera();
 	InitWorld();
@@ -57,8 +57,13 @@ TutorialGame::~TutorialGame()	{
 		delete val;
 	}
 
-	delete basicTex;
-	delete basicShader;
+	for (auto const& [key, val] : textures) {
+		delete val;
+	}
+
+	for (auto const& [key, val] : shaders) {
+		delete val;
+	}
 
 	delete physics;
 	delete renderer;
@@ -268,7 +273,7 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 		.SetScale(floorSize * 2)
 		.SetPosition(position);
 
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), basicTex, basicShader));
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), textures.at("basicTex"), shaders.at("basicShader")));
 	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
@@ -297,7 +302,7 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 		.SetScale(sphereSize)
 		.SetPosition(position);
 
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), meshes.at("sphereMesh"), basicTex, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), meshes.at("sphereMesh"), textures.at("basicTex"), shaders.at("basicShader")));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -318,7 +323,7 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 		.SetPosition(position)
 		.SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), meshes.at("cubeMesh"), basicTex, basicShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), meshes.at("cubeMesh"), textures.at("basicTex"), shaders.at("basicShader")));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -342,7 +347,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), nullptr, basicShader));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), nullptr, shaders.at("basicShader")));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -366,7 +371,7 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("enemyMesh"), nullptr, basicShader));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("enemyMesh"), nullptr, shaders.at("basicShader")));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -386,7 +391,7 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 		.SetScale(Vector3(2, 2, 2))
 		.SetPosition(position);
 
-	apple->SetRenderObject(new RenderObject(&apple->GetTransform(), meshes.at("bonusMesh"), nullptr, basicShader));
+	apple->SetRenderObject(new RenderObject(&apple->GetTransform(), meshes.at("bonusMesh"), nullptr, shaders.at("basicShader")));
 	apple->SetPhysicsObject(new PhysicsObject(&apple->GetTransform(), apple->GetBoundingVolume()));
 
 	apple->GetPhysicsObject()->SetInverseMass(1.0f);
