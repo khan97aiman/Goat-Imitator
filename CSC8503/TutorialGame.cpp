@@ -38,12 +38,12 @@ for this module, even in the coursework, but you can add it if you like!
 
 */
 void TutorialGame::InitialiseAssets() {
-	cubeMesh	= renderer->LoadMesh("cube.msh");
-	sphereMesh	= renderer->LoadMesh("sphere.msh");
-	charMesh	= renderer->LoadMesh("goat.msh");
-	enemyMesh	= renderer->LoadMesh("Keeper.msh");
-	bonusMesh	= renderer->LoadMesh("apple.msh");
-	capsuleMesh = renderer->LoadMesh("capsule.msh");
+	meshes.insert(std::make_pair("cubeMesh", renderer->LoadMesh("cube.msh")));
+	meshes.insert(std::make_pair("sphereMesh", renderer->LoadMesh("sphere.msh")));
+	meshes.insert(std::make_pair("charMesh", renderer->LoadMesh("goat.msh")));
+	meshes.insert(std::make_pair("enemyMesh", renderer->LoadMesh("Keeper.msh")));
+	meshes.insert(std::make_pair("bonusMesh", renderer->LoadMesh("apple.msh")));
+	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
 
 	basicTex	= renderer->LoadTexture("checkerboard.png");
 	basicShader = renderer->LoadShader("scene.vert", "scene.frag");
@@ -53,11 +53,9 @@ void TutorialGame::InitialiseAssets() {
 }
 
 TutorialGame::~TutorialGame()	{
-	delete cubeMesh;
-	delete sphereMesh;
-	delete charMesh;
-	delete enemyMesh;
-	delete bonusMesh;
+	for (auto const& [key, val]: meshes) {
+		delete val;
+	}
 
 	delete basicTex;
 	delete basicShader;
@@ -270,7 +268,7 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 		.SetScale(floorSize * 2)
 		.SetPosition(position);
 
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, basicTex, basicShader));
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), basicTex, basicShader));
 	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
@@ -299,7 +297,7 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 		.SetScale(sphereSize)
 		.SetPosition(position);
 
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), meshes.at("sphereMesh"), basicTex, basicShader));
 	sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -320,7 +318,7 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 		.SetPosition(position)
 		.SetScale(dimensions * 2);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), meshes.at("cubeMesh"), basicTex, basicShader));
 	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -344,7 +342,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, nullptr, basicShader));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), nullptr, basicShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -368,7 +366,7 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, nullptr, basicShader));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("enemyMesh"), nullptr, basicShader));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -388,7 +386,7 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 		.SetScale(Vector3(2, 2, 2))
 		.SetPosition(position);
 
-	apple->SetRenderObject(new RenderObject(&apple->GetTransform(), bonusMesh, nullptr, basicShader));
+	apple->SetRenderObject(new RenderObject(&apple->GetTransform(), meshes.at("bonusMesh"), nullptr, basicShader));
 	apple->SetPhysicsObject(new PhysicsObject(&apple->GetTransform(), apple->GetBoundingVolume()));
 
 	apple->GetPhysicsObject()->SetInverseMass(1.0f);

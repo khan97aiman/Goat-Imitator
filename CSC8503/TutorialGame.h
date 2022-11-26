@@ -65,17 +65,10 @@ namespace NCL {
 
 			GameObject* selectionObject = nullptr;
 
-			MeshGeometry*	capsuleMesh = nullptr;
-			MeshGeometry*	cubeMesh	= nullptr;
-			MeshGeometry*	sphereMesh	= nullptr;
+			std::map<std::string, MeshGeometry*> meshes;
 
 			TextureBase*	basicTex	= nullptr;
 			ShaderBase*		basicShader = nullptr;
-
-			//Coursework Meshes
-			MeshGeometry*	charMesh	= nullptr;
-			MeshGeometry*	enemyMesh	= nullptr;
-			MeshGeometry*	bonusMesh	= nullptr;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;
