@@ -257,6 +257,36 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 	physB->ApplyAngularImpulse(Vector3::Cross(relativeB, fullImpulse));
 }
 
+void PhysicsSystem::SpringResolveCollision(GameObject& a, GameObject& b, CollisionDetection::ContactPoint& p) const {
+	PhysicsObject* physA = a.GetPhysicsObject();
+	PhysicsObject* physB = b.GetPhysicsObject();
+
+	Transform& transformA = a.GetTransform();
+	Transform& transformB = b.GetTransform();
+	float totalMass = physA->GetInverseMass() + physB->GetInverseMass();
+	if (totalMass == 0) {
+		return; //two static objects ??
+	}
+
+	// Separate them out using projection
+	transformA.SetPosition(transformA.GetPosition() - (p.normal * p.penetration * (physA->GetInverseMass() / totalMass)));
+	transformB.SetPosition(transformB.GetPosition() + (p.normal * p.penetration * (physB->GetInverseMass() / totalMass)));
+
+	Vector3 relativeA = p.localA;
+	Vector3 relativeB = p.localB;
+	Vector3 angVelocityA = Vector3::Cross(physA->GetAngularVelocity(), relativeA);
+	Vector3 angVelocityB = Vector3::Cross(physB->GetAngularVelocity(), relativeB);
+	Vector3 fullVelocityA = physA->GetLinearVelocity() + angVelocityA;
+	Vector3 fullVelocityB = physB->GetLinearVelocity() + angVelocityB;
+	Vector3 contactVelocity = fullVelocityB - fullVelocityA;
+	float impulseForce = Vector3::Dot(contactVelocity, p.normal);
+
+	Vector3 force = p.normal * p.penetration - (Vector3(1,1,11) * impulseForce);
+
+	physA->AddForceAtPosition(-force, p.localA);
+	physB->AddForceAtPosition(force, p.localB);
+}
+
 /*
 
 Later, we replace the BasicCollisionDetection method with a broadphase
