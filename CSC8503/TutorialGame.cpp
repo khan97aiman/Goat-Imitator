@@ -329,6 +329,14 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
 
+	if (rand() % 2) {
+		cube->GetPhysicsObject()->SetElasticity(1.0f);
+		cube->GetRenderObject()->SetColour(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+	}
+	else {
+		cube->GetPhysicsObject()->SetElasticity(0.2f);
+		cube->GetRenderObject()->SetColour(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	}
 	world->AddGameObject(cube);
 
 	return cube;
