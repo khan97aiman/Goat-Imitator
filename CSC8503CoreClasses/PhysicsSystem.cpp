@@ -281,7 +281,7 @@ void PhysicsSystem::SpringResolveCollision(GameObject& a, GameObject& b, Collisi
 	Vector3 contactVelocity = fullVelocityB - fullVelocityA;
 	float impulseForce = Vector3::Dot(contactVelocity, p.normal);
 
-	Vector3 force = p.normal * p.penetration - (Vector3(1,1,11) * impulseForce);
+	Vector3 force = p.normal * p.penetration - (Vector3(1,1,1) * impulseForce);
 
 	physA->AddForceAtPosition(-force, p.localA);
 	physB->AddForceAtPosition(force, p.localB);
