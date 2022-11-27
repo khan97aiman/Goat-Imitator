@@ -270,16 +270,16 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 		PhysicsObject* object = (*i)->GetPhysicsObject();
 		if (object == nullptr) {
 			continue;
-			Transform& transform = (*i)->GetTransform();
-			// Position Stuff
-			Vector3 position = transform.GetPosition();
-			Vector3 linearVel = object->GetLinearVelocity();
-			position += linearVel * dt;
-			transform.SetPosition(position);
-			// Linear Damping
-			linearVel = linearVel * frameLinearDamping;
-			object->SetLinearVelocity(linearVel);
 		}
+		Transform& transform = (*i)->GetTransform();
+		// Position Stuff
+		Vector3 position = transform.GetPosition();
+		Vector3 linearVel = object->GetLinearVelocity();
+		position += linearVel * dt;
+		transform.SetPosition(position);
+		// Linear Damping
+		linearVel = linearVel * frameLinearDamping;
+		object->SetLinearVelocity(linearVel);	
 	}
 }
 
