@@ -9,9 +9,10 @@ enum class Layer {
 	OtherObjects
 };
 
-std::map<Layer, int> collisionMatrix = {
-	std::make_pair(Layer::Camera, ~(1 << (int)Layer::Camera)),
-	std::make_pair(Layer::Spheres, 1 << (int)Layer::Cubes),
-	std::make_pair(Layer::Cubes, 1 << (int)Layer::Spheres),
-	std::make_pair(Layer::OtherObjects, ~(1 << (int)Layer::Camera)),
-}
+
+static std::map<Layer, int> COLLISION_LAYER_MASK = {
+	std::make_pair(Layer::Camera, (1 << (int)Layer::Spheres)),
+	std::make_pair(Layer::Spheres, (1 << (int)Layer::Cubes) | (1 << (int)Layer::OtherObjects)),
+	std::make_pair(Layer::Cubes, (1 << (int)Layer::Spheres) | (1 << (int)Layer::OtherObjects)),
+	std::make_pair(Layer::OtherObjects, 1 << (int)Layer::Spheres) // ~(1 << (int)Layer::Camera)),
+};

@@ -9,7 +9,6 @@
 #include "StateGameObject.h"
 
 
-
 using namespace NCL;
 using namespace CSC8503;
 
@@ -278,6 +277,7 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
 	floor->GetPhysicsObject()->InitCubeInertia();
+	floor->SetLayer(Layer::OtherObjects);
 
 	world->AddGameObject(floor);
 
@@ -307,6 +307,7 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitSphereInertia();
+	sphere->SetLayer(Layer::Spheres);
 
 	world->AddGameObject(sphere);
 
@@ -337,6 +338,7 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 		cube->GetPhysicsObject()->SetElasticity(0.2f);
 		cube->GetRenderObject()->SetColour(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 	}
+	cube->SetLayer(Layer::Cubes);
 	world->AddGameObject(cube);
 
 	return cube;
@@ -360,6 +362,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitSphereInertia();
+	character->SetLayer(Layer::OtherObjects);
 
 	world->AddGameObject(character);
 
@@ -385,6 +388,7 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitSphereInertia();
+	character->SetLayer(Layer::OtherObjects);
 
 	world->AddGameObject(character);
 
@@ -405,6 +409,7 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 
 	apple->GetPhysicsObject()->SetInverseMass(1.0f);
 	apple->GetPhysicsObject()->InitSphereInertia();
+	apple->SetLayer(Layer::OtherObjects);
 
 	world->AddGameObject(apple);
 
@@ -488,7 +493,7 @@ bool TutorialGame::SelectObject() {
 
 			Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
 			RayCollision closestCollision;
-			if (world->Raycast(ray, closestCollision, true)) {
+			if (world->Raycast(ray, closestCollision, true, NULL, COLLISION_LAYER_MASK.at(Layer::Camera))) {
 				selectionObject = (GameObject*)closestCollision.node;
 				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 				Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(1, 0, 1, 1), 2000);

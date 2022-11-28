@@ -1,6 +1,7 @@
 #pragma once
 #include "Transform.h"
 #include "CollisionVolume.h"
+#include "Layer.h"
 
 using std::vector;
 
@@ -50,6 +51,14 @@ namespace NCL::CSC8503 {
 			physicsObject = newObject;
 		}
 
+		void SetLayer(Layer l) {
+			layer = l;
+		}
+
+		const Layer GetLayer() {
+			return layer;
+		}
+
 		const std::string& GetName() const {
 			return name;
 		}
@@ -87,6 +96,7 @@ namespace NCL::CSC8503 {
 		std::string	name;
 
 		Vector3 broadphaseAABB;
+		Layer	layer;
 	};
 }
 
