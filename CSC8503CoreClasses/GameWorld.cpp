@@ -103,7 +103,7 @@ bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObje
 	for (auto& i : gameObjects) {
 
 		//checking if the ray can interact with this game object
-		if (!std::count(activeLayers.begin(), activeLayers.end(), (int)i->GetLayer())) {
+		if (!(std::count(activeLayers.begin(), activeLayers.end(), (int)i->GetLayer())) && layerMask) {
 			continue;
 		}
 		if (!i->GetBoundingVolume()) { //objects might not be collideable etc...
