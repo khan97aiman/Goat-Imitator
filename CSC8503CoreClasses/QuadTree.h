@@ -41,17 +41,14 @@ namespace NCL {
 				delete[] children;
 			}
 
-			void Insert(T& object, const Vector3& objectPos, const Vector3& objectSize, int depthLeft, int maxSize) {
-			}
+			void Insert(T& object, const Vector3& objectPos, const Vector3& objectSize, int depthLeft, int maxSize);
 
-			void Split() {
-			}
+			void Split();
 
 			void DebugDraw() {
 			}
 
-			void OperateOnContents(QuadTreeFunc& func) {
-			}
+			void OperateOnContents(QuadTreeFunc& func);
 
 		protected:
 			std::list< QuadTreeEntry<T> >	contents;
