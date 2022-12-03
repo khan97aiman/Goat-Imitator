@@ -313,9 +313,11 @@ bool  CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const 
 	Matrix3 invOrientation = Matrix3(orientation.Conjugate());
 	Vector3 position = worldTransformA.GetPosition();
 	Vector3 localSpherePos = invOrientation * (worldTransformB.GetPosition() - position);
+	Transform tempTransformA;
+	tempTransformA.SetPosition(Vector3());
 	Transform tempTransformB;
 	tempTransformB.SetPosition(localSpherePos);
-	bool collided = AABBSphereIntersection(volumeA, worldTransformA, volumeB, tempTransformB, collisionInfo);
+	bool collided = AABBSphereIntersection(volumeA, tempTransformA, volumeB, tempTransformB, collisionInfo);
 	if (collided) {
 		collisionInfo.point.normal = Matrix3(orientation) * collisionInfo.point.normal;
 		collisionInfo.point.localB = Matrix3(orientation) * collisionInfo.point.localB + position;
@@ -340,7 +342,41 @@ bool CollisionDetection::SphereCapsuleIntersection(const CapsuleVolume& volumeA,
 }
 
 bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transform& worldTransformA, const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
-	return false;
+	
+	std::vector<Vector3> collisionAxes;
+	
+	//getting axes of both OBBs
+	std::vector<Vector3> axesA, axesB; 
+	volumeA.GetAxes(worldTransformA, axesA);
+	volumeB.GetAxes(worldTransformB, axesB);
+
+	//adding axes of both OBBs to container to check collision against
+	for (const auto& axis : axesA) {
+		AddCollisionAxis(axis, collisionAxes);
+	}
+	for (const auto& axis : axesB) {
+		AddCollisionAxis(axis, collisionAxes);
+	}
+	
+	//adding cross products of each axis of both OBBs against each other to container to check collision against
+	for (const auto& normA : axesA) {
+		for (const auto& normB : axesB) {
+			AddCollisionAxis(Vector3::Cross(normA, normB).Normalised(), collisionAxes);
+		}
+	}
+
+	collisionInfo.point.penetration = -FLT_MAX;
+	CollisionInfo collisionInfoOnAxis;
+	for (const auto& collisionAxis : collisionAxes) {
+		if (!CheckCollisionOnAxis(volumeA, worldTransformA, volumeB, worldTransformB, collisionAxis, collisionInfoOnAxis)) {
+			return false;
+		}
+		if (collisionInfoOnAxis.point.penetration >= collisionInfo.point.penetration) {
+			collisionInfo = collisionInfoOnAxis;
+		}
+	}
+
+	return true;
 }
 
 bool CollisionDetection::CapsuleIntersection(const CapsuleVolume& volumeA, const Transform& worldTransformA, const CapsuleVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
@@ -378,6 +414,53 @@ Matrix4 GenerateInverseProjection(float aspect, float nearPlane, float farPlane,
 	m.array[3][3] = (0.5f / nearPlane) + (0.5f / farPlane);
 
 	return m;
+}
+
+bool NCL::CollisionDetection::AddCollisionAxis(Vector3 axis, std::vector<Vector3>& collisionAxes) {
+	const float epsilon = 1e-6f;
+
+	//is axis 0,0,0??
+	if (Vector3::Dot(axis, axis) < epsilon)
+		return false;
+
+	axis.Normalise();
+
+	for (const Vector3& p_axis : collisionAxes)
+	{
+		//Is axis equal or approximately equal to a previous axis already in the list of axes
+		if (Vector3::Dot(axis, p_axis) >= 1.0f - epsilon)
+			return false;
+	}
+
+	collisionAxes.push_back(axis);
+	return true;
+}
+
+bool NCL::CollisionDetection::CheckCollisionOnAxis(const OBBVolume& volumeA, const Transform& worldTransformA, const OBBVolume& volumeB, const Transform& worldTransformB, const Vector3& axis, CollisionInfo& collisionInfo) {
+	Vector3 minA, minB, maxA, maxB;
+	volumeA.GetMinMaxVertices(worldTransformA, minA, maxA);
+	volumeA.GetMinMaxVertices(worldTransformB, minB, maxB);
+
+	float a = Vector3::Dot(axis, minA);
+	float b = Vector3::Dot(axis, maxA);
+	float c = Vector3::Dot(axis, minB);
+	float d = Vector3::Dot(axis, maxB);
+
+	if (a <= c && b >= c) { 
+		collisionInfo.point.normal = axis; 
+		collisionInfo.point.penetration = c - b;
+		collisionInfo.point.localA = minB + collisionInfo.point.normal * collisionInfo.point.penetration;
+		collisionInfo.point.localB = maxA - collisionInfo.point.normal * collisionInfo.point.penetration;
+		return true; 
+	}
+	if (c <= a && d >= a) {
+		collisionInfo.point.normal = -axis;
+		collisionInfo.point.penetration = a - d;
+		collisionInfo.point.localA = maxB - collisionInfo.point.normal * collisionInfo.point.penetration;
+		collisionInfo.point.localB = minA + collisionInfo.point.normal * collisionInfo.point.penetration;
+		return true;
+	}
+	return false;
 }
 
 Vector3 CollisionDetection::Unproject(const Vector3& screenPos, const Camera& cam) {

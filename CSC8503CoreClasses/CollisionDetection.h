@@ -117,7 +117,6 @@ namespace NCL {
 											const OBBVolume& volumeB,		const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
 
-
 		static Vector3 Unproject(const Vector3& screenPos, const Camera& cam);
 
 		static Vector3		UnprojectScreenPosition(Vector3 position, float aspect, float fov, const Camera &c);
@@ -125,7 +124,8 @@ namespace NCL {
 		static Matrix4		GenerateInverseView(const Camera &c);
 
 	protected:
-
+		static bool AddCollisionAxis(Vector3 axis, std::vector<Vector3>& collisionAxes);
+		static bool CheckCollisionOnAxis(const OBBVolume& volumeA, const Transform& worldTransformA, const OBBVolume& volumeB, const Transform& worldTransformB, const Vector3& axis, CollisionInfo& collisionInfo);
 	private:
 		CollisionDetection()	{}
 		~CollisionDetection()	{}
