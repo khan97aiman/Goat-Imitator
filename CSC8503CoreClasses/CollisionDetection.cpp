@@ -6,6 +6,7 @@
 #include "Window.h"
 #include "Maths.h"
 #include "Debug.h"
+#include <math.h>
 
 using namespace NCL;
 
@@ -374,6 +375,10 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
 		if (collisionInfoOnAxis.point.penetration >= collisionInfo.point.penetration) {
 			collisionInfo = collisionInfoOnAxis;
 		}
+		/*Vector3 relativePos = worldTransformB.GetPosition() - worldTransformA.GetPosition();
+		if (!getSeparatingPlane(relativePos, collisionAxis, volumeA, volumeB, axesA, axesB)) {
+			return false;
+		}*/
 	}
 
 	return true;
@@ -438,29 +443,46 @@ bool NCL::CollisionDetection::AddCollisionAxis(Vector3 axis, std::vector<Vector3
 
 bool NCL::CollisionDetection::CheckCollisionOnAxis(const OBBVolume& volumeA, const Transform& worldTransformA, const OBBVolume& volumeB, const Transform& worldTransformB, const Vector3& axis, CollisionInfo& collisionInfo) {
 	Vector3 minA, minB, maxA, maxB;
-	volumeA.GetMinMaxVertices(worldTransformA, minA, maxA);
-	volumeA.GetMinMaxVertices(worldTransformB, minB, maxB);
+	/*volumeA.GetMinMaxVertices(worldTransformA, minA, maxA);
+	volumeA.GetMinMaxVertices(worldTransformB, minB, maxB);*/
 
-	float a = Vector3::Dot(axis, minA);
-	float b = Vector3::Dot(axis, maxA);
-	float c = Vector3::Dot(axis, minB);
-	float d = Vector3::Dot(axis, maxB);
+	float a_min, a_max, b_min, b_max;
 
-	if (a <= c && b >= c) { 
+	volumeA.GetMinMaxOnAxis(worldTransformA, minA, maxA, a_min, a_max, axis);
+	volumeA.GetMinMaxOnAxis(worldTransformB, minB, maxB, b_min, b_max, axis);
+
+	/*float a_min = Vector3::Dot(axis, minA);
+	float a_max = Vector3::Dot(axis, maxA);
+	float b_min = Vector3::Dot(axis, minB);
+	float b_max = Vector3::Dot(axis, maxB);*/
+
+	if (a_min <= b_min && a_max >= b_min) {
 		collisionInfo.point.normal = axis; 
-		collisionInfo.point.penetration = c - b;
+		collisionInfo.point.penetration = b_min - a_max;
 		collisionInfo.point.localA = minB + collisionInfo.point.normal * collisionInfo.point.penetration;
 		collisionInfo.point.localB = maxA - collisionInfo.point.normal * collisionInfo.point.penetration;
 		return true; 
 	}
-	if (c <= a && d >= a) {
+	if (b_min <= a_min && b_max >= a_min) {
 		collisionInfo.point.normal = -axis;
-		collisionInfo.point.penetration = a - d;
+		collisionInfo.point.penetration = a_min - b_max;
 		collisionInfo.point.localA = maxB - collisionInfo.point.normal * collisionInfo.point.penetration;
 		collisionInfo.point.localB = minA + collisionInfo.point.normal * collisionInfo.point.penetration;
 		return true;
 	}
 	return false;
+}
+
+bool NCL::CollisionDetection::getSeparatingPlane(const Vector3& relativePos, const Vector3& axis, const OBBVolume& volumeA, const OBBVolume& volumeB, const std::vector<Vector3>& axesA, const std::vector<Vector3>& axesB) {
+	Vector3 halfSizeA = volumeA.GetHalfDimensions();
+	Vector3 halfSizeB = volumeB.GetHalfDimensions();
+	return (fabs(Vector3::Dot(relativePos, axis)) >
+			(fabs(Vector3::Dot((axesA[0] * halfSizeA.x), axis)) +
+			fabs(Vector3::Dot((axesA[1] * halfSizeA.y), axis)) +
+			fabs(Vector3::Dot((axesA[2] * halfSizeA.z), axis)) +
+			fabs(Vector3::Dot((axesB[0] * halfSizeB.x), axis)) +
+			fabs(Vector3::Dot((axesB[1] * halfSizeB.y), axis)) +
+			fabs(Vector3::Dot((axesB[2] * halfSizeB.z), axis))));
 }
 
 Vector3 CollisionDetection::Unproject(const Vector3& screenPos, const Camera& cam) {

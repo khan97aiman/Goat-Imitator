@@ -126,7 +126,9 @@ namespace NCL {
 	protected:
 		static bool AddCollisionAxis(Vector3 axis, std::vector<Vector3>& collisionAxes);
 		static bool CheckCollisionOnAxis(const OBBVolume& volumeA, const Transform& worldTransformA, const OBBVolume& volumeB, const Transform& worldTransformB, const Vector3& axis, CollisionInfo& collisionInfo);
-	private:
+		static bool getSeparatingPlane(const Vector3& relativePos, const Vector3& axis, const OBBVolume& volumeA, const OBBVolume& volumeB, const std::vector<Vector3>& axesA, const std::vector<Vector3>& axesB);
+
+private:
 		CollisionDetection()	{}
 		~CollisionDetection()	{}
 	};
