@@ -7,6 +7,7 @@
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
+#include <Assets.h>
 
 
 using namespace NCL;
@@ -44,6 +45,11 @@ void TutorialGame::InitialiseAssets() {
 	meshes.insert(std::make_pair("bonusMesh", renderer->LoadMesh("apple.msh")));
 	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
 
+	meshMaterials.insert(std::make_pair("goat_mat", new MeshMaterial("goat.mat")));
+	//meshAnimations.insert(std::make_pair("capsuleMesh", new MeshAnimation("Role_T.anm")));
+
+	meshMaterials.at("goat_mat")->LoadTextures();
+
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 
@@ -64,6 +70,12 @@ TutorialGame::~TutorialGame()	{
 		delete val;
 	}
 
+	for (const auto& [key, val] : meshMaterials) {
+		delete val;
+	}
+	for (const auto& [key, val] : meshAnimations) {
+		delete val;
+	}
 	delete physics;
 	delete renderer;
 	delete world;
@@ -359,7 +371,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), nullptr, shaders.at("basicShader")));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), meshMaterials.at("goat_mat")->GetMaterialForLayer(1)->GetEntry("Diffuse"), shaders.at("basicShader")));
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);

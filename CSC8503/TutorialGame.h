@@ -6,6 +6,8 @@
 #include "PhysicsSystem.h"
 
 #include "StateGameObject.h"
+#include <MeshMaterial.h>
+#include <MeshAnimation.h>
 
 namespace NCL {
 	namespace CSC8503 {
@@ -66,6 +68,9 @@ namespace NCL {
 			GameObject* selectionObject = nullptr;
 
 			std::map<std::string, MeshGeometry*> meshes;
+			std::map<std::string, MeshMaterial*> meshMaterials;
+			std::map<std::string, MeshAnimation*> meshAnimations;
+			
 			std::map<std::string, TextureBase*> textures;
 			std::map<std::string, ShaderBase*> shaders;
 

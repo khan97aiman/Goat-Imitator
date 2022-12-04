@@ -4,6 +4,6 @@ MeshMat
 1
 Simple Wolf
 2
-Diffuse:/Textures/wolf_color.png
-Bump:/Textures/wolf_normal.png
+Diffuse:wolf_color.png
+Bump:wolf_normal.png
 0
