@@ -371,7 +371,11 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 		.SetScale(Vector3(meshSize, meshSize, meshSize))
 		.SetPosition(position);
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), meshMaterials.at("goat_mat")->GetMaterialForLayer(1)->GetEntry("Diffuse"), shaders.at("basicShader")));
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), nullptr, shaders.at("basicShader")));
+	int meshLayers = meshes.at("charMesh")->GetSubMeshCount();
+	for (int i = 0; i < meshLayers; i++) {
+		character->GetRenderObject()->AddTexture(meshMaterials.at("goat_mat")->GetMaterialForLayer(i)->GetEntry("Diffuse"));
+	}
 	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
