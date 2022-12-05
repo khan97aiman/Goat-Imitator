@@ -51,5 +51,5 @@ void main(void)
 	if(hasVertexColours) {
 		OUT.colour		= objectColour * colour;
 	}
-	gl_Position		= mvp * vec4(skelPos.xyz , 1.0);
+	gl_Position		= mvp * vec4(localPos.xyz , 1.0);
 }

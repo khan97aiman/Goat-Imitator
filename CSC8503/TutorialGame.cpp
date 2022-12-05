@@ -44,12 +44,12 @@ void TutorialGame::InitialiseAssets() {
 	meshes.insert(std::make_pair("enemyMesh", renderer->LoadMesh("Keeper.msh")));
 	meshes.insert(std::make_pair("bonusMesh", renderer->LoadMesh("apple.msh")));
 	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
-	meshes.insert(std::make_pair("wolfMesh", renderer->LoadMesh("Role_T.msh")));
+	meshes.insert(std::make_pair("wolfMesh", renderer->LoadMesh("wolf/wolf.msh")));
 
 	meshMaterials.insert(std::make_pair("goat_mat", new MeshMaterial("goat.mat")));
-	meshMaterials.insert(std::make_pair("wolfMat", new MeshMaterial("Role_T.mat")));
+	meshMaterials.insert(std::make_pair("wolfMat", new MeshMaterial("wolf/wolf.mat")));
 
-	meshAnimations.insert(std::make_pair("wolfAnimDefault", new MeshAnimation("Role_T.anm")));
+	meshAnimations.insert(std::make_pair("wolfAnimDefault", new MeshAnimation("wolf/wolf_default.anm")));
 
 	meshMaterials.at("goat_mat")->LoadTextures();
 	meshMaterials.at("wolfMat")->LoadTextures();
