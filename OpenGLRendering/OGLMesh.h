@@ -30,6 +30,7 @@ namespace NCL {
 		protected:
 			GLuint	GetVAO()			const { return vao;			}
 			void BindVertexAttribute(int attribSlot, int bufferID, int bindingID, int elementCount, int elementSize, int elementOffset);
+			void BindVertexAttribute_i(int attribSlot, int bufferID, int bindingID, int elementCount, int elementSize, int elementOffset);
 
 			int		subCount;
 
