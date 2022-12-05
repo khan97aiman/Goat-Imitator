@@ -8,7 +8,7 @@
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
 #include <Assets.h>
-
+#include "Animal.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -44,14 +44,19 @@ void TutorialGame::InitialiseAssets() {
 	meshes.insert(std::make_pair("enemyMesh", renderer->LoadMesh("Keeper.msh")));
 	meshes.insert(std::make_pair("bonusMesh", renderer->LoadMesh("apple.msh")));
 	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
+	meshes.insert(std::make_pair("wolfMesh", renderer->LoadMesh("wolf/wolf.msh")));
 
 	meshMaterials.insert(std::make_pair("goat_mat", new MeshMaterial("goat.mat")));
-	//meshAnimations.insert(std::make_pair("capsuleMesh", new MeshAnimation("Role_T.anm")));
+	meshMaterials.insert(std::make_pair("wolfMat", new MeshMaterial("wolf/wolf.mat")));
+
+	meshAnimations.insert(std::make_pair("wolfAnimDefault", new MeshAnimation("wolf/wolf_default.anm")));
 
 	meshMaterials.at("goat_mat")->LoadTextures();
+	meshMaterials.at("wolfMat")->LoadTextures();
 
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
+	shaders.insert(std::make_pair("skinningShader", renderer->LoadShader("skinning.vert", "scene.frag")));
 
 	InitCamera();
 	InitWorld();
@@ -263,7 +268,7 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-	InitMixedGridWorld(15, 15, 3.5f, 3.5f);
+	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
 	InitGameExamples();
 	InitDefaultFloor();
@@ -434,6 +439,10 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 	return apple;
 }
 
+void TutorialGame::AddWolfToWorld(const Vector3& position) {
+	world->AddGameObject(new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("basicShader")));
+}
+
 void TutorialGame::InitDefaultFloor() {
 	AddFloorToWorld(Vector3(0, -20, 0));
 }
@@ -442,6 +451,7 @@ void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(0, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
 	AddBonusToWorld(Vector3(10, 5, 0));
+	AddWolfToWorld(Vector3(15, 5, 0));
 }
 
 void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {

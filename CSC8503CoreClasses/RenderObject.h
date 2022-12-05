@@ -1,13 +1,15 @@
 #pragma once
 #include "TextureBase.h"
 #include "ShaderBase.h"
+#include "MeshAnimation.h"
+#include "MeshGeometry.h"
 
 namespace NCL {
 	using namespace NCL::Rendering;
 
-	class MeshGeometry;
 	namespace CSC8503 {
 		class Transform;
+
 		using namespace Maths;
 
 		class RenderObject
@@ -52,12 +54,35 @@ namespace NCL {
 				return colour;
 			}
 
+			void SetRigged(bool rigged) {
+				this->rigged = rigged;
+			}
+
+			bool IsRigged() const {
+				return rigged;
+			}
+
+			//void SendAnimationFramesToGPU() const{
+			//	std::vector<Matrix4 > frameMatrices;
+			//	const Matrix4* invBindPose = &mesh->GetInverseBindPose()[0];
+			//	const Matrix4* frameData = animation->GetJointData(currentFrame);
+			//	for (unsigned int i = 0; i < mesh->GetJointCount(); ++i) {
+			//		frameMatrices.emplace_back(frameData[i] * invBindPose[i]);
+			//	}
+			//	OGLShader* shader = (OGLShader*)(this->shader);
+			//	//glUniformMatrix4fv(glGetUniformLocation(shader->GetProgramID(), "joints"), frameMatrices.size(), false, (float*)frameMatrices.data());
+			//}
+
+			MeshAnimation* animation;
+			int currentFrame = 0;
+			float frameTime = 0.0f;
 		protected:
 			MeshGeometry*	mesh;
 			std::vector<TextureBase*>	textures;
 			ShaderBase*		shader;
 			Transform*		transform;
 			Vector4			colour;
+			bool	rigged = false;
 		};
 	}
 }

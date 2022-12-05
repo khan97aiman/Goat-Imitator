@@ -13,7 +13,7 @@ namespace NCL::CSC8503 {
 	class GameObject	{
 	public:
 		GameObject(std::string name = "");
-		~GameObject();
+		virtual ~GameObject();
 
 		void SetBoundingVolume(CollisionVolume* vol) {
 			boundingVolume = vol;
@@ -82,6 +82,8 @@ namespace NCL::CSC8503 {
 		int		GetWorldID() const {
 			return worldID;
 		}
+
+		virtual void Update(float dt) {}
 
 	protected:
 		Transform			transform;
