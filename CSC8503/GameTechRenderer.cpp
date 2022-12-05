@@ -169,9 +169,6 @@ void GameTechRenderer::RenderShadowMap() {
 		Matrix4 mvpMatrix	= mvMatrix * modelMatrix;
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
 		BindMesh((*i).GetMesh());
-		if (i->IsRigged()) {
-			//i->SendAnimationFramesToGPU();
-		}
 		int layerCount = (*i).GetMesh()->GetSubMeshCount();
 		for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh(i);
@@ -294,12 +291,14 @@ void GameTechRenderer::RenderCamera() {
 		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetTextures().size() ? 1:0);
 
 		BindMesh((*i).GetMesh());
-		if (i->IsRigged()) {
-			//i->SendAnimationFramesToGPU();
-		}
 		int layerCount = (*i).GetMesh()->GetSubMeshCount();
 		for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh(i);
+		}
+		if (i->IsRigged()) {
+			vector<Matrix4> frameMatrices;
+			i->GetFrameMatrices(frameMatrices);
+			glUniformMatrix4fv(glGetUniformLocation(shader->GetProgramID(), "joints"), frameMatrices.size(), false, (float*)frameMatrices.data());
 		}
 	}
 }

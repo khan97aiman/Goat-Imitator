@@ -3,6 +3,7 @@
 #include "ShaderBase.h"
 #include "MeshAnimation.h"
 #include "MeshGeometry.h"
+#include "../OpenGLRendering/OGLShader.h"
 
 namespace NCL {
 	using namespace NCL::Rendering;
@@ -62,16 +63,15 @@ namespace NCL {
 				return rigged;
 			}
 
-			//void SendAnimationFramesToGPU() const{
-			//	std::vector<Matrix4 > frameMatrices;
-			//	const Matrix4* invBindPose = &mesh->GetInverseBindPose()[0];
-			//	const Matrix4* frameData = animation->GetJointData(currentFrame);
-			//	for (unsigned int i = 0; i < mesh->GetJointCount(); ++i) {
-			//		frameMatrices.emplace_back(frameData[i] * invBindPose[i]);
-			//	}
-			//	OGLShader* shader = (OGLShader*)(this->shader);
-			//	//glUniformMatrix4fv(glGetUniformLocation(shader->GetProgramID(), "joints"), frameMatrices.size(), false, (float*)frameMatrices.data());
-			//}
+			void GetFrameMatrices(vector<Matrix4>& frameMatrices) const {
+				const vector<Matrix4> invBindPose = mesh->GetInverseBindPose();
+				const Matrix4* frameData = animation->GetJointData(currentFrame);
+				for (unsigned int i = 0; i < mesh->GetJointCount(); ++i) {
+					frameMatrices.emplace_back(frameData[i] * invBindPose[i]);
+				}
+				/*OGLShader* shader = (OGLShader*)(this->shader);
+				glUniformMatrix4fv(glGetUniformLocation(shader->GetProgramID(), "joints"), frameMatrices.size(), false, (float*)frameMatrices.data());*/
+			}
 
 			MeshAnimation* animation;
 			int currentFrame = 0;

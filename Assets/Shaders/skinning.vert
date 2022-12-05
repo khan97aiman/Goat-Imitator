@@ -9,8 +9,8 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in vec3 normal;
-layout(location = 4)  vec4 jointWeights;
-layout(location = 5)  ivec4 jointIndices;
+layout(location = 4) in vec4 jointWeights;
+layout(location = 5) in ivec4 jointIndices;
 
 uniform vec4 		objectColour = vec4(1,1,1,1);
 
