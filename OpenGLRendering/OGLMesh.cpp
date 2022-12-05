@@ -109,8 +109,8 @@ void OGLMesh::UploadToGPU(Rendering::RendererBase* renderer) {
 	}
 
 	if (!GetIndexData().empty()) {		//buffer index data
-		glGenBuffers(1, &indexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+		glGenBuffers(1, &attributeBuffers[VertexAttribute::MAX_ATTRIBUTES]);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, attributeBuffers[VertexAttribute::MAX_ATTRIBUTES]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), (int*)GetIndexData().data(), GL_STATIC_DRAW);
 	}
 
