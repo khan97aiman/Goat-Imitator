@@ -112,32 +112,6 @@ void Quaternion::CalculateW()	{
 	}
 }
 
-float Quaternion::GetRotationAngle() const {
-	Vector3 axis;
-	
-	// if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
-	//if (this->w > 1) this->Normalised();
-	float angle = 2 * acos(w);
-
-	////double s = sqrt(1 - this->w * this->w); // assuming quaternion normalised then w is less than 1, so term always positive.
-	//double s = sin(angle / 2);
-
-	//// test to avoid divide by zero, s is always positive due to sqrt
-	//if (s < 0.001) { 
-	//	// if s close to zero then direction of axis not important
-	//	axis.x = this->x;
-	//	axis.y = this->y;
-	//	axis.z = this->z;
-	//}
-	//else {
-	//	axis.x = this->x / s; // normalise axis
-	//	axis.y = this->y / s;
-	//	axis.z = this->z / s;
-	//}
-	//Vector3 angles(angle / axis.x, angle / axis.y, angle / axis.z);
-	return angle;
-}
-
 Quaternion Quaternion::Conjugate() const
 {
 	return Quaternion(-x,-y,-z,w);

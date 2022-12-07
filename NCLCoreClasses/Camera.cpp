@@ -12,7 +12,6 @@ last frame (default value is for simplicities sake...)
 void Camera::UpdateCamera(float dt) {
 	//Update the mouse by how much
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
-	//yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = std::min(pitch, 90.0f);
@@ -20,36 +19,6 @@ void Camera::UpdateCamera(float dt) {
 
 	CalculateZoom();
 	CalculateAngleAroundPlayer();
-
-	/*if (yaw <0) {
-		yaw += 360.0f;
-	}
-	if (yaw > 360.0f) {
-		yaw -= 360.0f;
-	}*/
-	/*
-	float frameSpeed = 100 * dt;
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
-		position += Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(0, 0, -1) * frameSpeed;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
-		position -= Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(0, 0, -1) * frameSpeed;
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
-		position += Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(-1, 0, 0) * frameSpeed;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
-		position -= Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Vector3(-1, 0, 0) * frameSpeed;
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SHIFT)) {
-		position.y += frameSpeed;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SPACE)) {
-		position.y -= frameSpeed;
-	}*/
 }
 
 /*
@@ -133,20 +102,14 @@ void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPositi
 	position.x = playerPosition.x - xOffset;
 	position.z = playerPosition.z - zOffset;
 	position.y = playerPosition.y + vDist;
-	//yaw = 180 - theta;
 
-	Vector3 lockedOffset = Vector3(0, 14, distanceFromPlayer);
-	//Vector3 camPos = playerPosition + lockedOffset;
-	
+	Vector3 lockedOffset = Vector3(0, 14, distanceFromPlayer);	
 
 	Matrix4 temp = Matrix4::BuildViewMatrix(position, playerPosition, Vector3(0, 1, 0));
 
 	Matrix4 modelMat = temp.Inverse();
 
 	Quaternion q(modelMat);
-	Vector3 angles = q.ToEuler(); //nearly there now!
-
-	//position = camPos;
-	//SetPitch(angles.x);
+	Vector3 angles = q.ToEuler(); 
 	SetYaw(angles.y);
 }

@@ -40,11 +40,6 @@ void NCL::CSC8503::Transform::IncreasePosition(const Vector3& worldPos) {
 	UpdateMatrix();
 }
 
-void NCL::CSC8503::Transform::DecreasePosition(const Vector3& worldPos) {
-	position -= worldPos;
-	UpdateMatrix();
-}
-
 void NCL::CSC8503::Transform::IncreaseRotation(const Vector3& axis, float degrees) {
 	orientation = Quaternion::AxisAngleToQuaterion(axis, degrees) * orientation;
 	UpdateMatrix();
