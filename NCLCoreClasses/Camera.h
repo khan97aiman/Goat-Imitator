@@ -103,7 +103,7 @@ namespace NCL {
 		void CalculateAngleAroundPlayer();
 		float CalculateHorizontalDistanceFromPlayer();
 		float CalculateVerticalDistanceFromPlayer();
-		void CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation);
+		void CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation, bool init = false);
 	protected:
 		CameraType camType;
 

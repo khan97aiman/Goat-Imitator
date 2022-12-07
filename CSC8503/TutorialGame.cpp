@@ -58,8 +58,8 @@ void TutorialGame::InitialiseAssets() {
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 	shaders.insert(std::make_pair("skinningShader", renderer->LoadShader("skinning.vert", "scene.frag")));
 
-	InitCamera();
 	InitWorld();
+	InitCamera();
 }
 
 TutorialGame::~TutorialGame()	{
@@ -87,10 +87,10 @@ TutorialGame::~TutorialGame()	{
 }
 
 void TutorialGame::UpdateGame(float dt) {
-	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
 	if (!inSelectionMode) {
 		world->GetMainCamera()->UpdateCamera(dt);
 	}
+	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
 
 	if (lockedObject != nullptr) {
 		Vector3 objPos = lockedObject->GetTransform().GetPosition();
@@ -260,9 +260,11 @@ void TutorialGame::DebugObjectMovement() {
 void TutorialGame::InitCamera() {
 	world->GetMainCamera()->SetNearPlane(0.1f);
 	world->GetMainCamera()->SetFarPlane(500.0f);
-	world->GetMainCamera()->SetPitch(-15.0f);
-	world->GetMainCamera()->SetYaw(315.0f);
-	world->GetMainCamera()->SetPosition(Vector3(-60, 40, 60));
+	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation(), true);
+
+	//world->GetMainCamera()->SetPitch(-15.0f);
+	//world->GetMainCamera()->SetYaw(315.0f);
+	//world->GetMainCamera()->SetPosition(Vector3(-60, 40, 60));
 	lockedObject = nullptr;
 }
 

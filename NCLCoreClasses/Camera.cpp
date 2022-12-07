@@ -78,9 +78,7 @@ void NCL::Camera::CalculateZoom() {
 }
 
 void NCL::Camera::CalculateAngleAroundPlayer() {
-	if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
-		angleAroundPlayer += Window::GetMouse()->GetRelativePosition().x * 0.3f;
-	}
+	angleAroundPlayer += Window::GetMouse()->GetRelativePosition().x;
 }
 
 float NCL::Camera::CalculateHorizontalDistanceFromPlayer() {
@@ -91,7 +89,7 @@ float NCL::Camera::CalculateVerticalDistanceFromPlayer() {
 	return distanceFromPlayer * sin(Maths::DegreesToRadians(pitch));
 }
 
-void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation) {
+void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation, bool init) {
 	float vDist = CalculateVerticalDistanceFromPlayer();
 	float hDist = CalculateHorizontalDistanceFromPlayer();
 
@@ -101,7 +99,7 @@ void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPositi
 
 	position.x = playerPosition.x - xOffset;
 	position.z = playerPosition.z - zOffset;
-	position.y = playerPosition.y + vDist;
+	position.y = playerPosition.y + vDist + 14;
 
 	Vector3 lockedOffset = Vector3(0, 14, distanceFromPlayer);	
 
@@ -111,5 +109,6 @@ void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPositi
 
 	Quaternion q(modelMat);
 	Vector3 angles = q.ToEuler(); 
+	if (init) SetPitch(angles.x);
 	SetYaw(angles.y);
 }
