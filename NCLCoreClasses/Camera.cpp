@@ -21,7 +21,6 @@ void Camera::UpdateCamera(float dt) {
 	CalculateZoom();
 	CalculateAngleAroundPlayer();
 
-	/*CalculateThirdPersonCameraPosition();*/
 	/*if (yaw <0) {
 		yaw += 360.0f;
 	}
@@ -124,20 +123,7 @@ float NCL::Camera::CalculateVerticalDistanceFromPlayer() {
 }
 
 void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation) {
-	Vector3 lockedOffset = Vector3(0, 14, distanceFromPlayer);
-	Vector3 camPos = playerPosition + lockedOffset;
-
-	Matrix4 temp = Matrix4::BuildViewMatrix(camPos, playerPosition, Vector3(0, 1, 0));
-
-	Matrix4 modelMat = temp.Inverse();
-
-	Quaternion q(modelMat);
-	Vector3 angles = q.ToEuler(); //nearly there now!
-
-	position = camPos;
-	//SetPitch(angles.x);
-	SetYaw(angles.y);
-	/*float vDist = CalculateVerticalDistanceFromPlayer();
+	float vDist = CalculateVerticalDistanceFromPlayer();
 	float hDist = CalculateHorizontalDistanceFromPlayer();
 
 	float theta = Maths::DegreesToRadians(playerOrientation.ToEuler().y + angleAroundPlayer);
@@ -147,5 +133,20 @@ void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPositi
 	position.x = playerPosition.x - xOffset;
 	position.z = playerPosition.z - zOffset;
 	position.y = playerPosition.y + vDist;
-	yaw = 180 - theta;*/
+	//yaw = 180 - theta;
+
+	Vector3 lockedOffset = Vector3(0, 14, distanceFromPlayer);
+	//Vector3 camPos = playerPosition + lockedOffset;
+	
+
+	Matrix4 temp = Matrix4::BuildViewMatrix(position, playerPosition, Vector3(0, 1, 0));
+
+	Matrix4 modelMat = temp.Inverse();
+
+	Quaternion q(modelMat);
+	Vector3 angles = q.ToEuler(); //nearly there now!
+
+	//position = camPos;
+	//SetPitch(angles.x);
+	SetYaw(angles.y);
 }

@@ -87,6 +87,7 @@ TutorialGame::~TutorialGame()	{
 }
 
 void TutorialGame::UpdateGame(float dt) {
+	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
 	if (!inSelectionMode) {
 		world->GetMainCamera()->UpdateCamera(dt);
 	}
@@ -143,7 +144,6 @@ void TutorialGame::UpdateGame(float dt) {
 	MoveSelectedObject();
 
 	world->UpdateWorld(dt);
-	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
 	renderer->Update(dt);
 	physics->Update(dt);
 

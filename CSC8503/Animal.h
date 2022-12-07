@@ -43,10 +43,10 @@ public:
 	}
 	void Update(float dt) {
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
-			currentRunSpeed = -runSpeed;
+			currentRunSpeed = runSpeed;
 		}
 		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
-			currentRunSpeed = runSpeed;
+			currentRunSpeed = -runSpeed;
 		}
 		else {
 			currentRunSpeed = 0;
@@ -77,8 +77,8 @@ public:
 	}
 	~Animal() {}
 protected:
-	float runSpeed = 10;	// unit: m/s
-	float turnSpeed = 10.0f; // unit: degrees/s
+	float runSpeed = 50;	// unit: m/s
+	float turnSpeed = 50.0f; // unit: degrees/s
 	float currentRunSpeed = 0.0f; 
 	float currentTurnSpeed = 0.0f;
 };
