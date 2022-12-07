@@ -1,9 +1,9 @@
 #include "Camera.h"
 #include "Window.h"
 #include <algorithm>
+#include <math.h>
 
 using namespace NCL;
-
 /*
 Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
@@ -12,19 +12,23 @@ last frame (default value is for simplicities sake...)
 void Camera::UpdateCamera(float dt) {
 	//Update the mouse by how much
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
-	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
+	//yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = std::min(pitch, 90.0f);
 	pitch = std::max(pitch, -90.0f);
 
-	if (yaw <0) {
+	CalculateZoom();
+	CalculateAngleAroundPlayer();
+
+	/*CalculateThirdPersonCameraPosition();*/
+	/*if (yaw <0) {
 		yaw += 360.0f;
 	}
 	if (yaw > 360.0f) {
 		yaw -= 360.0f;
-	}
-
+	}*/
+	/*
 	float frameSpeed = 100 * dt;
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
@@ -46,7 +50,7 @@ void Camera::UpdateCamera(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SPACE)) {
 		position.y -= frameSpeed;
-	}
+	}*/
 }
 
 /*
@@ -98,4 +102,50 @@ Camera Camera::BuildOrthoCamera(const Vector3& pos, float pitch, float yaw, floa
 	c.bottom	= bottom;
 
 	return c;
+}
+
+void NCL::Camera::CalculateZoom() {
+	float zoomLevel = Window::GetMouse()->GetWheelMovement() * 0.1f;
+	distanceFromPlayer -= zoomLevel;
+}
+
+void NCL::Camera::CalculateAngleAroundPlayer() {
+	if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
+		angleAroundPlayer += Window::GetMouse()->GetRelativePosition().x * 0.3f;
+	}
+}
+
+float NCL::Camera::CalculateHorizontalDistanceFromPlayer() {
+	return distanceFromPlayer * cos(Maths::DegreesToRadians(pitch));
+}
+
+float NCL::Camera::CalculateVerticalDistanceFromPlayer() {
+	return distanceFromPlayer * sin(Maths::DegreesToRadians(pitch));
+}
+
+void NCL::Camera::CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation) {
+	Vector3 lockedOffset = Vector3(0, 14, distanceFromPlayer);
+	Vector3 camPos = playerPosition + lockedOffset;
+
+	Matrix4 temp = Matrix4::BuildViewMatrix(camPos, playerPosition, Vector3(0, 1, 0));
+
+	Matrix4 modelMat = temp.Inverse();
+
+	Quaternion q(modelMat);
+	Vector3 angles = q.ToEuler(); //nearly there now!
+
+	position = camPos;
+	//SetPitch(angles.x);
+	SetYaw(angles.y);
+	/*float vDist = CalculateVerticalDistanceFromPlayer();
+	float hDist = CalculateHorizontalDistanceFromPlayer();
+
+	float theta = Maths::DegreesToRadians(playerOrientation.ToEuler().y + angleAroundPlayer);
+	float xOffset = hDist * sin(theta);
+	float zOffset = hDist * cos(theta);
+
+	position.x = playerPosition.x - xOffset;
+	position.z = playerPosition.z - zOffset;
+	position.y = playerPosition.y + vDist;
+	yaw = 180 - theta;*/
 }

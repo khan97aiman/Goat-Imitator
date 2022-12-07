@@ -42,6 +42,33 @@ public:
 		renderObject->animation = animation;
 	}
 	void Update(float dt) {
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
+			currentRunSpeed = -runSpeed;
+		}
+		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
+			currentRunSpeed = runSpeed;
+		}
+		else {
+			currentRunSpeed = 0;
+		}
+
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
+			currentTurnSpeed = turnSpeed;
+		}
+		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
+			currentTurnSpeed = -turnSpeed;
+		}
+		else {
+			currentTurnSpeed = 0;
+		}
+
+		transform.IncreaseRotation(Vector3(0, 1, 0), currentTurnSpeed * dt);
+		float distance = currentRunSpeed * dt;
+		float dx = distance * sin(Maths::DegreesToRadians(transform.GetOrientation().ToEuler().y));
+		float dz = distance * cos(Maths::DegreesToRadians(transform.GetOrientation().ToEuler().y));
+
+		transform.IncreasePosition(Vector3(dx, 0 , dz));
+		
 		renderObject->frameTime -= dt;
 		while (renderObject->frameTime < 0.0f) {
 			renderObject->currentFrame = (renderObject->currentFrame + 1) % renderObject->animation->GetFrameCount();
@@ -50,4 +77,8 @@ public:
 	}
 	~Animal() {}
 protected:
+	float runSpeed = 10;	// unit: m/s
+	float turnSpeed = 10.0f; // unit: degrees/s
+	float currentRunSpeed = 0.0f; 
+	float currentTurnSpeed = 0.0f;
 };

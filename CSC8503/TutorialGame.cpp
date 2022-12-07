@@ -90,6 +90,7 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!inSelectionMode) {
 		world->GetMainCamera()->UpdateCamera(dt);
 	}
+
 	if (lockedObject != nullptr) {
 		Vector3 objPos = lockedObject->GetTransform().GetPosition();
 		Vector3 camPos = objPos + lockedOffset;
@@ -142,6 +143,7 @@ void TutorialGame::UpdateGame(float dt) {
 	MoveSelectedObject();
 
 	world->UpdateWorld(dt);
+	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
 	renderer->Update(dt);
 	physics->Update(dt);
 
@@ -440,7 +442,8 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 }
 
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
-	world->AddGameObject(new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader")));
+	player = new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
+	world->AddGameObject(player);
 }
 
 void TutorialGame::InitDefaultFloor() {

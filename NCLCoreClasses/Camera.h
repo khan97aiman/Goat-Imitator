@@ -9,6 +9,8 @@ https://research.ncl.ac.uk/game/
 #pragma once
 #include "Matrix4.h"
 #include "Vector3.h"
+#include "Quaternion.h"
+#include "Maths.h"
 
 namespace NCL {
 	using namespace NCL::Maths;
@@ -96,6 +98,12 @@ namespace NCL {
 
 		static Camera BuildPerspectiveCamera(const Vector3& pos, float pitch, float yaw, float fov, float near, float far);
 		static Camera BuildOrthoCamera(const Vector3& pos, float pitch, float yaw, float left, float right, float top, float bottom, float near, float far);
+
+		void CalculateZoom();
+		void CalculateAngleAroundPlayer();
+		float CalculateHorizontalDistanceFromPlayer();
+		float CalculateVerticalDistanceFromPlayer();
+		void CalculateThirdPersonCameraPosition(const Vector3& playerPosition, const Quaternion& playerOrientation);
 	protected:
 		CameraType camType;
 
@@ -110,5 +118,7 @@ namespace NCL {
 		float	yaw;
 		float	pitch;
 		Vector3 position;
+		float distanceFromPlayer = 25.0f;
+		float angleAroundPlayer = 0.0f;
 	};
 }
