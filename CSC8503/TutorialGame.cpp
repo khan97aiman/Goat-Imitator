@@ -299,6 +299,7 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 		.SetPosition(position);
 
 	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), textures.at("grassTex"), shaders.at("basicShader")));
+	floor->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
 
 	floor->GetPhysicsObject()->SetInverseMass(0);

@@ -38,7 +38,7 @@ void main(void)
 	vec3 halfDir = normalize ( incident + viewDir );
 
 	float rFactor = max (0.0 , dot ( halfDir , IN.normal ));
-	float sFactor = pow ( rFactor , 80.0 );
+	float sFactor = pow ( rFactor , 1000000.0 );
 	
 	vec4 albedo = IN.colour;
 	
