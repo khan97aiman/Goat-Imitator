@@ -78,7 +78,7 @@ void NCL::Camera::CalculateZoom() {
 }
 
 void NCL::Camera::CalculateAngleAroundPlayer() {
-	angleAroundPlayer += Window::GetMouse()->GetRelativePosition().x;
+	angleAroundPlayer -= Window::GetMouse()->GetRelativePosition().x;
 }
 
 float NCL::Camera::CalculateHorizontalDistanceFromPlayer() {
