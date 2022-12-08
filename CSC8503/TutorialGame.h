@@ -50,7 +50,7 @@ namespace NCL {
 
 			GameObject* AddPlayerToWorld(const Vector3& position);
 			GameObject* AddEnemyToWorld(const Vector3& position);
-			GameObject* AddBonusToWorld(const Vector3& position);
+			void AddCoinsToWorld(const Vector3& position);
 			void AddWolfToWorld(const Vector3& position);
 
 #ifdef USEVULKAN

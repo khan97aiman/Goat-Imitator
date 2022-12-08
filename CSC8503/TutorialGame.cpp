@@ -9,6 +9,7 @@
 #include "StateGameObject.h"
 #include <Assets.h>
 #include "Animal.h"
+#include "Coin.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -42,7 +43,7 @@ void TutorialGame::InitialiseAssets() {
 	meshes.insert(std::make_pair("sphereMesh", renderer->LoadMesh("sphere.msh")));
 	meshes.insert(std::make_pair("charMesh", renderer->LoadMesh("goat.msh")));
 	meshes.insert(std::make_pair("enemyMesh", renderer->LoadMesh("Keeper.msh")));
-	meshes.insert(std::make_pair("bonusMesh", renderer->LoadMesh("apple.msh")));
+	meshes.insert(std::make_pair("coinMesh", renderer->LoadMesh("coin.msh")));
 	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
 	meshes.insert(std::make_pair("wolfMesh", renderer->LoadMesh("wolf/wolf.msh")));
 
@@ -56,6 +57,8 @@ void TutorialGame::InitialiseAssets() {
 
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
 	textures.insert(std::make_pair("grassTex", renderer->LoadTexture("grass.jpeg")));
+	textures.insert(std::make_pair("coinTex", renderer->LoadTexture("coin.png")));
+
 
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 	shaders.insert(std::make_pair("skinningShader", renderer->LoadShader("skinning.vert", "scene.frag")));
@@ -424,25 +427,8 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 	return character;
 }
 
-GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
-	GameObject* apple = new GameObject();
-
-	SphereVolume* volume = new SphereVolume(0.5f);
-	apple->SetBoundingVolume((CollisionVolume*)volume);
-	apple->GetTransform()
-		.SetScale(Vector3(2, 2, 2))
-		.SetPosition(position);
-
-	apple->SetRenderObject(new RenderObject(&apple->GetTransform(), meshes.at("bonusMesh"), nullptr, shaders.at("basicShader")));
-	apple->SetPhysicsObject(new PhysicsObject(&apple->GetTransform(), apple->GetBoundingVolume()));
-
-	apple->GetPhysicsObject()->SetInverseMass(1.0f);
-	apple->GetPhysicsObject()->InitSphereInertia();
-	apple->SetLayer(Layer::OtherObjects);
-
-	world->AddGameObject(apple);
-
-	return apple;
+void TutorialGame::AddCoinsToWorld(const Vector3& position) {
+	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("skinningShader")));
 }
 
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
@@ -457,7 +443,7 @@ void TutorialGame::InitDefaultFloor() {
 void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(0, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
-	AddBonusToWorld(Vector3(10, 5, 0));
+	AddCoinsToWorld(Vector3(5, 5, 0));
 	AddWolfToWorld(Vector3(15, 5, 0));
 }
 
