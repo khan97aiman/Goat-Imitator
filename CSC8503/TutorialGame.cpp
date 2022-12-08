@@ -56,9 +56,8 @@ void TutorialGame::InitialiseAssets() {
 	meshMaterials.at("wolfMat")->LoadTextures();
 
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
-	textures.insert(std::make_pair("grassTex", renderer->LoadTexture("grass.jpeg")));
+	textures.insert(std::make_pair("grassTex", renderer->LoadTexture("grass.jpg")));
 	textures.insert(std::make_pair("coinTex", renderer->LoadTexture("coin.png")));
-
 
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 	shaders.insert(std::make_pair("skinningShader", renderer->LoadShader("skinning.vert", "scene.frag")));
@@ -432,7 +431,7 @@ void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 }
 
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
-	player = new Animal(position, meshes.at("wolfMesh"), nullptr, meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
+	player = new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
 	world->AddGameObject(player);
 }
 
