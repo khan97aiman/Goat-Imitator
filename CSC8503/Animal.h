@@ -31,9 +31,9 @@ public:
 		renderObject = new RenderObject(&transform, mesh, nullptr, shader);
 		renderObject->SetRigged(true);
 		int meshLayers = mesh->GetSubMeshCount();
-		for (int i = 0; i < meshLayers; i++) {
+		/*for (int i = 0; i < meshLayers; i++) {
 			renderObject->AddTexture(material->GetMaterialForLayer(i)->GetEntry("Diffuse"));
-		}
+		}*/
 		physicsObject = new PhysicsObject(&transform, boundingVolume);
 
 		physicsObject->SetInverseMass(inverseMass);

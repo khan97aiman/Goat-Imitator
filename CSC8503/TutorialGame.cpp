@@ -49,12 +49,14 @@ void TutorialGame::InitialiseAssets() {
 	meshMaterials.insert(std::make_pair("goat_mat", new MeshMaterial("goat.mat")));
 	meshMaterials.insert(std::make_pair("wolfMat", new MeshMaterial("wolf/wolf.mat")));
 
-	meshAnimations.insert(std::make_pair("wolfAnimDefault", new MeshAnimation("wolf/wolf_default.anm")));
+	meshAnimations.insert(std::make_pair("wolfAnimDefault", new MeshAnimation("wolf/wolf_running.anm")));
 
 	meshMaterials.at("goat_mat")->LoadTextures();
 	meshMaterials.at("wolfMat")->LoadTextures();
 
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
+	textures.insert(std::make_pair("grassTex", renderer->LoadTexture("grass.jpeg")));
+
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 	shaders.insert(std::make_pair("skinningShader", renderer->LoadShader("skinning.vert", "scene.frag")));
 
@@ -294,7 +296,7 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 		.SetScale(floorSize * 2)
 		.SetPosition(position);
 
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), textures.at("basicTex"), shaders.at("basicShader")));
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), textures.at("grassTex"), shaders.at("basicShader")));
 	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
@@ -444,7 +446,7 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 }
 
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
-	player = new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
+	player = new Animal(position, meshes.at("wolfMesh"), nullptr, meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
 	world->AddGameObject(player);
 }
 

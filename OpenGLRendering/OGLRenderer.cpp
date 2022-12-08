@@ -180,10 +180,11 @@ void OGLRenderer::BindTextureToShader(const TextureBase*t, const std::string& un
 		texID = oglTexture->GetObjectID();
 	}
 
+	glUniform1i(slot, texUnit);
 	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(GL_TEXTURE_2D, texID);
 
-	glUniform1i(slot, texUnit);
+	//glUniform1i(slot, texUnit);
 }
 
 //void OGLRenderer::DrawDebugLines() {
