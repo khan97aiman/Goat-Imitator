@@ -35,8 +35,9 @@ Transform& Transform::SetOrientation(const Quaternion& worldOrientation) {
 	return *this;
 }
 
-void NCL::CSC8503::Transform::IncreasePosition(const Vector3& worldPos) {
-	position += worldPos;
+void NCL::CSC8503::Transform::IncreasePosition(float speed) {
+	//position += worldPos;
+	position += Matrix3(orientation) * Vector3(0.0f, 0.0f, speed);
 	UpdateMatrix();
 }
 

@@ -15,7 +15,7 @@ namespace NCL {
 			Transform& SetPosition(const Vector3& worldPos);
 			Transform& SetScale(const Vector3& worldScale);
 			Transform& SetOrientation(const Quaternion& newOr);
-			void IncreasePosition(const Vector3& worldPos);
+			void IncreasePosition(float speed);
 			void IncreaseRotation(const Vector3& axis, float degrees);
 
 			Vector3 GetPosition() const {

@@ -63,11 +63,7 @@ public:
 		}
 
 		transform.IncreaseRotation(Vector3(0, 1, 0), currentTurnSpeed * dt);
-		float distance = currentRunSpeed * dt;
-		float dx = distance * sin(Maths::DegreesToRadians(transform.GetOrientation().ToEuler().y));
-		float dz = distance * cos(Maths::DegreesToRadians(transform.GetOrientation().ToEuler().y));
-
-		transform.IncreasePosition(Vector3(dx, 0 , dz));
+		transform.IncreasePosition(currentRunSpeed * dt);
 		
 		renderObject->frameTime -= dt;
 		while (renderObject->frameTime < 0.0f) {
