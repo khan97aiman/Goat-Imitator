@@ -17,6 +17,7 @@ using namespace Rendering;
 class Coin : public GameObject {
 public:
 	Coin(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader) : GameObject() {
+		name = "Coin";
 		float meshSize = 0.25f;
 		float inverseMass = 1.0f;
 

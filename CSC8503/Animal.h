@@ -17,6 +17,7 @@ using namespace Rendering;
 class Animal : public GameObject {
 public:
 	Animal(const Vector3& position, MeshGeometry* mesh, MeshMaterial* material, MeshAnimation* animation, ShaderBase* shader) : GameObject() {
+		name = "Player";
 		float meshSize = 3.0f;
 		float inverseMass = 0.5f;
 
@@ -77,4 +78,5 @@ protected:
 	float turnSpeed = 50.0f; // unit: degrees/s
 	float currentRunSpeed = 0.0f; 
 	float currentTurnSpeed = 0.0f;
+	int points = 0;
 };

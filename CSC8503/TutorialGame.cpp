@@ -288,7 +288,7 @@ A single function to add a large immoveable cube to the bottom of our world
 
 */
 GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
-	GameObject* floor = new GameObject();
+	GameObject* floor = new GameObject("Floor");
 
 	Vector3 floorSize = Vector3(200, 2, 200);
 	AABBVolume* volume = new AABBVolume(floorSize);
@@ -319,7 +319,7 @@ physics worlds. You'll probably need another function for the creation of OBB cu
 
 */
 GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius, float inverseMass) {
-	GameObject* sphere = new GameObject();
+	GameObject* sphere = new GameObject("Sphere");
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
 	SphereVolume* volume = new SphereVolume(radius);
@@ -342,7 +342,7 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 }
 
 GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass) {
-	GameObject* cube = new GameObject();
+	GameObject* cube = new GameObject("Cube");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
 	//OBBVolume* volume = new OBBVolume(dimensions);
@@ -428,7 +428,7 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 }
 
 void TutorialGame::AddCoinsToWorld(const Vector3& position) {
-	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("skinningShader")));
+	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("basicShader")));
 }
 
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
