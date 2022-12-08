@@ -45,9 +45,11 @@ public:
 	void Update(float dt) {
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
 			currentRunSpeed = runSpeed;
+			//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
 		}
 		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
 			currentRunSpeed = -runSpeed;
+			//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
 		}
 		else {
 			currentRunSpeed = 0;
@@ -55,16 +57,23 @@ public:
 
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
 			currentTurnSpeed = turnSpeed;
+			//physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
 		}
 		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
 			currentTurnSpeed = -turnSpeed;
+			//physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
 		}
 		else {
 			currentTurnSpeed = 0;
 		}
 
+		//physicsObject->AddTorque(Vector3(0, currentTurnSpeed, 0));
 		transform.IncreaseRotation(Vector3(0, 1, 0), currentTurnSpeed * dt);
 		transform.IncreasePosition(currentRunSpeed * dt);
+
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SPACE)) {
+			physicsObject->AddForce(Vector3(0, 20, 0));
+		}
 		
 		renderObject->frameTime -= dt;
 		while (renderObject->frameTime < 0.0f) {
@@ -73,6 +82,17 @@ public:
 		}
 	}
 	~Animal() {}
+	virtual void OnCollisionBegin(GameObject* otherObject) {
+		if ((otherObject->IsActive() && otherObject->GetName() == "Coin")) {
+			points++;
+		}
+	}
+
+	virtual void OnCollisionEnd(GameObject* otherObject) {
+		if (otherObject->GetName() == "Coin") {
+			otherObject->SetActive(false);
+		}
+	}
 protected:
 	float runSpeed = 50;	// unit: m/s
 	float turnSpeed = 50.0f; // unit: degrees/s

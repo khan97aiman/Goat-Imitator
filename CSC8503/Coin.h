@@ -19,7 +19,7 @@ public:
 	Coin(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader) : GameObject() {
 		name = "Coin";
 		float meshSize = 0.25f;
-		float inverseMass = 1.0f;
+		float inverseMass = 0.0f;
 
 		SphereVolume* volume = new SphereVolume(meshSize * 5);
 

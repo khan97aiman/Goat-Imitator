@@ -443,7 +443,7 @@ void TutorialGame::InitDefaultFloor() {
 void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(0, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
-	AddCoinsToWorld(Vector3(5, 5, 0));
+	AddCoinsToWorld(Vector3(5, -15, 0));
 	AddWolfToWorld(Vector3(15, 5, 0));
 }
 
