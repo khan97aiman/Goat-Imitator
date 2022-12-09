@@ -73,6 +73,14 @@ namespace NCL {
 				}
 			}
 		}
+		Vector3 OBBSupport(const Transform& worldTransform, Vector3 worldDir) const {
+			Vector3 localDir = worldTransform.GetOrientation().Conjugate() * worldDir;
+			Vector3 vertex;
+			vertex.x = localDir.x < 0 ? -0.5f : 0.5f;
+			vertex.y = localDir.y < 0 ? -0.5f : 0.5f;
+			vertex.z = localDir.z < 0 ? -0.5f : 0.5f;
+			return worldTransform.GetMatrix() * vertex;
+		}
 	protected:
 		Maths::Vector3 halfSizes;
 		const int numVertices = 8;

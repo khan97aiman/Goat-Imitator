@@ -205,6 +205,9 @@ void PhysicsSystem::BasicCollisionDetection() {
 			}
 			CollisionDetection::CollisionInfo info;
 			if (CollisionDetection::ObjectIntersection(*i, *j, info)) {
+				if (((*i)->GetName() == "Cube" && (*j)->GetName() == "Floor") || ((*j)->GetName() == "Cube" && (*i)->GetName() == "Floor")) {
+					std::cout << "Collision between " << (*i)->GetName() << " and " << (*j)->GetName() << std::endl;
+				}
 				ImpulseResolveCollision(*info.a, *info.b, info.point);
 				info.framesLeft = numCollisionFrames;
 				allCollisions.insert(info);
