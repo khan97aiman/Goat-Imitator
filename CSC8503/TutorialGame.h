@@ -9,6 +9,12 @@
 #include <MeshMaterial.h>
 #include <MeshAnimation.h>
 
+enum class GameState {
+	INIT,
+	RUNNING,
+	PAUSED,
+	ENDED,
+};
 namespace NCL {
 	namespace CSC8503 {
 		class TutorialGame		{
@@ -84,7 +90,7 @@ namespace NCL {
 
 			GameObject* objClosest = nullptr;
 			GameObject* player = nullptr;
-
+			GameState gameState = GameState::INIT;
 		};
 	}
 }
