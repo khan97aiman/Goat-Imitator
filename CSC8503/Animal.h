@@ -93,6 +93,8 @@ public:
 			otherObject->SetActive(false);
 		}
 	}
+
+	int GetPoints() { return points; }
 protected:
 	float runSpeed = 50;	// unit: m/s
 	float turnSpeed = 50.0f; // unit: degrees/s

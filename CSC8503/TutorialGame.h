@@ -8,6 +8,8 @@
 #include "StateGameObject.h"
 #include <MeshMaterial.h>
 #include <MeshAnimation.h>
+#include "Animal.h"
+
 
 enum class GameState {
 	INIT,
@@ -89,7 +91,7 @@ namespace NCL {
 			}
 
 			GameObject* objClosest = nullptr;
-			GameObject* player = nullptr;
+			Animal* player = nullptr;
 			GameState gameState = GameState::INIT;
 		};
 	}

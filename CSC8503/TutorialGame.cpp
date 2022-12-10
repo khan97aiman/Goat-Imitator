@@ -8,7 +8,6 @@
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
 #include <Assets.h>
-#include "Animal.h"
 #include "Coin.h"
 
 using namespace NCL;
@@ -159,6 +158,7 @@ void TutorialGame::UpdateGame(float dt) {
 	//	SelectObject();
 	//	MoveSelectedObject();
 		Debug::Print("P: Pause", Vector2(5, 90), Vector4(1, 1, 1, 1));
+		Debug::Print("Coins Collected: X" + std::to_string(player->GetPoints()), Vector2(5, 95), Vector4(1, 1, 0, 1));
 
 		renderer->Render();
 		world->UpdateWorld(dt);
