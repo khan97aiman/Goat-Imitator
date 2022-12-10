@@ -321,7 +321,7 @@ bool  CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const 
 	bool collided = AABBSphereIntersection(volumeA, tempTransformA, volumeB, tempTransformB, collisionInfo);
 	if (collided) {
 		collisionInfo.point.normal = Matrix3(orientation) * collisionInfo.point.normal;
-		collisionInfo.point.localB = Matrix3(orientation) * collisionInfo.point.localB + position;
+		collisionInfo.point.localB = Matrix3(orientation) * collisionInfo.point.localB;
 	}
 	return collided;
 }
@@ -366,19 +366,15 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
 		}
 	}
 
-	collisionInfo.point.penetration = -FLT_MAX;
+	collisionInfo.point.penetration = FLT_MAX;
 	CollisionInfo collisionInfoOnAxis;
 	for (const auto& collisionAxis : collisionAxes) {
 		if (!CheckCollisionOnAxis(volumeA, worldTransformA, volumeB, worldTransformB, collisionAxis, collisionInfoOnAxis)) {
 			return false;
 		}
-		if (collisionInfoOnAxis.point.penetration >= collisionInfo.point.penetration) {
-			collisionInfo = collisionInfoOnAxis;
+		if (collisionInfoOnAxis.point.penetration < collisionInfo.point.penetration) {
+			collisionInfo.point = collisionInfoOnAxis.point;
 		}
-		/*Vector3 relativePos = worldTransformB.GetPosition() - worldTransformA.GetPosition();
-		if (!getSeparatingPlane(relativePos, collisionAxis, volumeA, volumeB, axesA, axesB)) {
-			return false;
-		}*/
 	}
 
 	return true;
@@ -446,28 +442,33 @@ bool NCL::CollisionDetection::CheckCollisionOnAxis(const OBBVolume& volumeA, con
 	/*volumeA.GetMinMaxVertices(worldTransformA, minA, maxA);
 	volumeA.GetMinMaxVertices(worldTransformB, minB, maxB);*/
 
-	float a_min, a_max, b_min, b_max;
+	/*float a_min, a_max, b_min, b_max;
 
 	volumeA.GetMinMaxOnAxis(worldTransformA, minA, maxA, a_min, a_max, axis);
-	volumeA.GetMinMaxOnAxis(worldTransformB, minB, maxB, b_min, b_max, axis);
+	volumeB.GetMinMaxOnAxis(worldTransformB, minB, maxB, b_min, b_max, axis);*/
 
-	/*float a_min = Vector3::Dot(axis, minA);
+	minA = volumeA.OBBSupport(worldTransformA, -axis);
+	minB = volumeB.OBBSupport(worldTransformB, -axis);
+	maxA = volumeA.OBBSupport(worldTransformA, axis);
+	maxB = volumeB.OBBSupport(worldTransformB, axis);
+
+	float a_min = Vector3::Dot(axis, minA);
 	float a_max = Vector3::Dot(axis, maxA);
 	float b_min = Vector3::Dot(axis, minB);
-	float b_max = Vector3::Dot(axis, maxB);*/
+	float b_max = Vector3::Dot(axis, maxB);
 
 	if (a_min <= b_min && a_max >= b_min) {
 		collisionInfo.point.normal = axis; 
-		collisionInfo.point.penetration = b_min - a_max;
+		collisionInfo.point.penetration = a_max - b_min;
 		collisionInfo.point.localA = minB + collisionInfo.point.normal * collisionInfo.point.penetration;
 		collisionInfo.point.localB = maxA - collisionInfo.point.normal * collisionInfo.point.penetration;
 		return true; 
 	}
 	if (b_min <= a_min && b_max >= a_min) {
 		collisionInfo.point.normal = -axis;
-		collisionInfo.point.penetration = a_min - b_max;
-		collisionInfo.point.localA = maxB - collisionInfo.point.normal * collisionInfo.point.penetration;
-		collisionInfo.point.localB = minA + collisionInfo.point.normal * collisionInfo.point.penetration;
+		collisionInfo.point.penetration = b_max - a_min;
+		collisionInfo.point.localA = maxB + collisionInfo.point.normal * collisionInfo.point.penetration;
+		collisionInfo.point.localB = minA - collisionInfo.point.normal * collisionInfo.point.penetration;
 		return true;
 	}
 	return false;

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameWorld.h"
+#include "QuadTree.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -49,7 +50,7 @@ namespace NCL {
 
 			std::set<CollisionDetection::CollisionInfo> allCollisions;
 			std::set<CollisionDetection::CollisionInfo> broadphaseCollisions;
-			std::vector<CollisionDetection::CollisionInfo> broadphaseCollisionsVec;
+			//std::vector<CollisionDetection::CollisionInfo> broadphaseCollisionsVec;
 			bool useBroadPhase		= true;
 			int numCollisionFrames	= 5;
 		};
