@@ -92,8 +92,12 @@ TutorialGame::~TutorialGame()	{
 
 void TutorialGame::UpdateGame(float time, float dt) {
 	if (remainingTime == 0) {
-
+		gameState = GameState::LOST;
 	}
+	if (player->GetPoints() == 1) {
+		gameState = GameState::WON;
+	}
+
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
 		if (gameState == GameState::PAUSED) {
 			gameState = GameState::RUNNING;
@@ -186,14 +190,25 @@ void TutorialGame::UpdateGame(float time, float dt) {
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 60), Vector4(1, 1, 1, 1)); 
 		renderer->Render();
 	}
-
 	else if (gameState == GameState::PAUSED) {
 		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
 		Debug::Print("Press P to Resume Playing", Vector2(25, 60), Vector4(1, 1, 1, 1));
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 		renderer->Render();
 	}
+	else if (gameState == GameState::WON) {
+		Debug::Print("YOU WON, YAYY!", Vector2(35, 45), Vector4(1, 0, 1, 1));
+		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
+		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 
+		renderer->Render();
+	}
+	else if (gameState == GameState::LOST) {
+		Debug::Print("YOU LOST, LOSER!", Vector2(35, 45), Vector4(1, 0, 0, 1));
+		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
+		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
+		renderer->Render();
+	}
 }
 
 void TutorialGame::UpdateKeys() {

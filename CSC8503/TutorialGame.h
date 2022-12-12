@@ -15,7 +15,8 @@ enum class GameState {
 	INIT,
 	RUNNING,
 	PAUSED,
-	ENDED,
+	LOST,
+	WON,
 };
 namespace NCL {
 	namespace CSC8503 {
@@ -95,7 +96,7 @@ namespace NCL {
 			GameState gameState = GameState::INIT;
 			int idleTime = 0;
 			int totalTimeAllowed = 30;
-			int remainingTime = 0;
+			int remainingTime = -1;
 			int pauseTime = 0;
 			int pauseStartTime = 0;
 		};
