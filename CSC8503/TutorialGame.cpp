@@ -29,6 +29,7 @@ TutorialGame::TutorialGame()	{
 
 	InitialiseAssets();
 	physics->UseGravity(useGravity);
+	testStateObject = nullptr;
 }
 
 /*
@@ -118,6 +119,9 @@ void TutorialGame::UpdateGame(float time, float dt) {
 	}
 
 	if (gameState == GameState::RUNNING) {
+		if (testStateObject) {
+			testStateObject->Update(dt);
+		}
 		if (!inSelectionMode) {
 			world->GetMainCamera()->UpdateCamera(dt);
 		}
@@ -336,6 +340,8 @@ void TutorialGame::InitWorld() {
 
 	InitGameExamples();
 	InitDefaultFloor();
+	testStateObject = AddStateObjectToWorld(Vector3(15, 10, 0));
+
 }
 
 /*
@@ -490,6 +496,32 @@ void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
 	player = new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
 	world->AddGameObject(player);
+}
+
+StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {
+	float meshSize = 3.0f;
+	float inverseMass = 0.5f;
+
+	StateGameObject* character = new StateGameObject();
+
+	AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+	//CapsuleVolume* volume = new CapsuleVolume(0.9 * meshSize, 0.3 * meshSize);
+	character->SetBoundingVolume((CollisionVolume*)volume);
+
+	character->GetTransform()
+		.SetScale(Vector3(meshSize, meshSize, meshSize))
+		.SetPosition(position);
+
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("enemyMesh"), nullptr, shaders.at("basicShader")));
+	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+
+	character->GetPhysicsObject()->SetInverseMass(inverseMass);
+	character->GetPhysicsObject()->InitSphereInertia();
+	character->SetLayer(Layer::OtherObjects);
+
+	world->AddGameObject(character);
+
+	return character;
 }
 
 void TutorialGame::InitDefaultFloor() {
