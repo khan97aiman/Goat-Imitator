@@ -62,6 +62,7 @@ int main() {
 	TutorialGame g;
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+		float time = w->GetTimer()->GetTotalTimeSeconds();
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
 		if (dt > 0.1f) {
 			std::cout << "Skipping large time delta" << std::endl;
@@ -80,7 +81,7 @@ int main() {
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
-		g.UpdateGame(dt);
+		g.UpdateGame(time, dt);
 	}
 	Window::DestroyGameWindow();
 }

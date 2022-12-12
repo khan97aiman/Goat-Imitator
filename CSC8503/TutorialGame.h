@@ -24,7 +24,7 @@ namespace NCL {
 			TutorialGame();
 			~TutorialGame();
 
-			virtual void UpdateGame(float dt);
+			virtual void UpdateGame(float time, float dt);
 
 		protected:
 			void InitialiseAssets();
@@ -93,6 +93,11 @@ namespace NCL {
 			GameObject* objClosest = nullptr;
 			Animal* player = nullptr;
 			GameState gameState = GameState::INIT;
+			int idleTime = 0;
+			int totalTimeAllowed = 30;
+			int remainingTime = 0;
+			int pauseTime = 0;
+			int pauseStartTime = 0;
 		};
 	}
 }

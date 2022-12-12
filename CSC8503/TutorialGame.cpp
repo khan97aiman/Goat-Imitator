@@ -90,15 +90,27 @@ TutorialGame::~TutorialGame()	{
 	delete world;
 }
 
-void TutorialGame::UpdateGame(float dt) {
+void TutorialGame::UpdateGame(float time, float dt) {
+	if (remainingTime == 0) {
+
+	}
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
-		if (gameState == GameState::PAUSED) gameState = GameState::RUNNING;
-		else if (gameState == GameState::RUNNING) gameState = GameState::PAUSED;
+		if (gameState == GameState::PAUSED) {
+			gameState = GameState::RUNNING;
+			int diff = time - pauseStartTime;
+			pauseTime += diff;
+		}
+		else if (gameState == GameState::RUNNING) {
+			gameState = GameState::PAUSED;
+			pauseStartTime = time;
+		}
 	}
 	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::N)) {
 		if (gameState != GameState::INIT)
 			InitWorld();
 		gameState = GameState::RUNNING;
+		pauseTime = 0;
+		idleTime = time;
 	}
 
 	if (gameState == GameState::RUNNING) {
@@ -157,6 +169,7 @@ void TutorialGame::UpdateGame(float dt) {
 
 	//	SelectObject();
 	//	MoveSelectedObject();
+		Debug::Print("Remaining Time: " + std::to_string(remainingTime), Vector2(5, 5), Vector4(1, 0, 0, 1));
 		Debug::Print("P: Pause", Vector2(5, 90), Vector4(1, 1, 1, 1));
 		Debug::Print("Coins Collected: X" + std::to_string(player->GetPoints()), Vector2(5, 95), Vector4(1, 1, 0, 1));
 
@@ -166,6 +179,7 @@ void TutorialGame::UpdateGame(float dt) {
 		physics->Update(dt);
 
 		Debug::UpdateRenderables(dt);
+		remainingTime = totalTimeAllowed - ((int)time - idleTime) + pauseTime;
 	}
 	else if (gameState == GameState::INIT) {
 		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
