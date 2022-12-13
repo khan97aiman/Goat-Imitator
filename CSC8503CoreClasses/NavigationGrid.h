@@ -41,6 +41,7 @@ namespace NCL {
 			bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;
 			GridNode*	RemoveBestNode(std::vector<GridNode*>& list) const;
 			float		Heuristic(GridNode* hNode, GridNode* endNode) const;
+
 			int nodeSize;
 			int gridWidth;
 			int gridHeight;
