@@ -1,5 +1,6 @@
 #include "NavigationGrid.h"
 #include "Assets.h"
+#include "Wall.h"
 
 #include <fstream>
 
@@ -21,7 +22,7 @@ NavigationGrid::NavigationGrid()	{
 	allNodes	= nullptr;
 }
 
-NavigationGrid::NavigationGrid(const std::string&filename) : NavigationGrid() {
+NavigationGrid::NavigationGrid(const std::string&filename, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, GameWorld* world) : NavigationGrid() {
 	std::ifstream infile(Assets::DATADIR + filename);
 
 	infile >> nodeSize;
@@ -36,7 +37,10 @@ NavigationGrid::NavigationGrid(const std::string&filename) : NavigationGrid() {
 			char type = 0;
 			infile >> type;
 			n.type = type;
-			n.position = Vector3((float)(x * nodeSize), 0, (float)(y * nodeSize));
+			n.position = Vector3((float)(x * nodeSize), -15, (float)(y * nodeSize));
+			if (n.type == 'x') {
+				world->AddGameObject(new Wall(n.position, mesh, texture, shader));
+			}
 		}
 	}
 	
@@ -149,6 +153,7 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 	}
 	return false; //open list emptied out with no path!
 }
+
 
 bool NavigationGrid::NodeInList(GridNode* n, std::vector<GridNode*>& list) const {
 	std::vector<GridNode*>::iterator i = std::find(list.begin(), list.end(), n);

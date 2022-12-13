@@ -1,7 +1,13 @@
 #pragma once
 #include "NavigationMap.h"
 #include <string>
+#include <MeshGeometry.h>
+#include <ShaderBase.h>
+#include <TextureBase.h>
+#include <GameWorld.h>
+
 namespace NCL {
+	using namespace Rendering;
 	namespace CSC8503 {
 		struct GridNode {
 			GridNode* parent;
@@ -32,11 +38,10 @@ namespace NCL {
 		class NavigationGrid : public NavigationMap	{
 		public:
 			NavigationGrid();
-			NavigationGrid(const std::string&filename);
+			NavigationGrid(const std::string&filename, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, GameWorld* world);
 			~NavigationGrid();
 
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
-				
 		protected:
 			bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;
 			GridNode*	RemoveBestNode(std::vector<GridNode*>& list) const;

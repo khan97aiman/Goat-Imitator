@@ -9,6 +9,7 @@
 #include "StateGameObject.h"
 #include <Assets.h>
 #include "Coin.h"
+#include <NavigationGrid.h>
 
 using namespace NCL;
 using namespace CSC8503;
@@ -59,6 +60,8 @@ void TutorialGame::InitialiseAssets() {
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
 	textures.insert(std::make_pair("grassTex", renderer->LoadTexture("grass.jpg")));
 	textures.insert(std::make_pair("coinTex", renderer->LoadTexture("coin.png")));
+	textures.insert(std::make_pair("floorTex", renderer->LoadTexture("ground.png")));
+
 
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
 	shaders.insert(std::make_pair("skinningShader", renderer->LoadShader("skinning.vert", "scene.frag")));
@@ -92,12 +95,12 @@ TutorialGame::~TutorialGame()	{
 }
 
 void TutorialGame::UpdateGame(float time, float dt) {
-	if (remainingTime == 0) {
+	/*if (remainingTime == 0) {
 		gameState = GameState::LOST;
 	}
 	if (player->GetPoints() == 1) {
 		gameState = GameState::WON;
-	}
+	}*/
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
 		if (gameState == GameState::PAUSED) {
@@ -336,12 +339,12 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-	InitMixedGridWorld(15, 15, 3.5f, 3.5f);
+	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 
 	InitGameExamples();
 	InitDefaultFloor();
 	testStateObject = AddStateObjectToWorld(Vector3(15, 10, 0));
-
+	AddNavigationGrid();
 }
 
 /*
@@ -360,8 +363,8 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 		.SetScale(floorSize * 2)
 		.SetPosition(position);
 
-	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), textures.at("grassTex"), shaders.at("basicShader")));
-	floor->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), meshes.at("cubeMesh"), textures.at("floorTex"), shaders.at("basicShader")));
+	//floor->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
@@ -496,6 +499,10 @@ void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 void TutorialGame::AddWolfToWorld(const Vector3& position) {
 	player = new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
 	world->AddGameObject(player);
+}
+
+void TutorialGame::AddNavigationGrid() {
+	NavigationGrid grid("TestGrid2.txt", meshes.at("cubeMesh"), textures.at("grassTex"), shaders.at("basicShader"), world);
 }
 
 StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {
