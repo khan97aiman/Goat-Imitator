@@ -532,7 +532,7 @@ StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {
 }
 
 void TutorialGame::InitDefaultFloor() {
-	AddFloorToWorld(Vector3(0, -20, 0));
+	AddFloorToWorld(Vector3(140, -20, 130));
 }
 
 void TutorialGame::InitGameExamples() {

@@ -118,7 +118,7 @@ namespace NCL {
 		float	yaw;
 		float	pitch;
 		Vector3 position;
-		float distanceFromPlayer = 25.0f;
+		float distanceFromPlayer = 10.0f;
 		float angleAroundPlayer = 0.0f;
 	};
 }

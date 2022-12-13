@@ -23,12 +23,12 @@ public:
 		Vector3 cubeDims = Vector3(1, 1, 1);
 		float inverseMass = 0.0f;
 
-		AABBVolume* volume = new AABBVolume(cubeDims * 5);
+		AABBVolume* volume = new AABBVolume(cubeDims * 10);
 
 		boundingVolume = (CollisionVolume*)volume;
 
 		transform
-			.SetScale(cubeDims * 10)
+			.SetScale(cubeDims * 20)
 			.SetPosition(position);
 
 		renderObject = new RenderObject(&transform, mesh, texture, shader);
