@@ -16,7 +16,7 @@ using namespace Rendering;
 
 class Animal : public GameObject {
 public:
-	Animal(const Vector3& position, MeshGeometry* mesh, MeshMaterial* material, MeshAnimation* animation, ShaderBase* shader) : GameObject() {
+	Animal(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, MeshMaterial* material, MeshAnimation* animation, ShaderBase* shader) : GameObject() {
 		name = "Player";
 		float meshSize = 3.0f;
 		float inverseMass = 0.5f;
@@ -29,26 +29,28 @@ public:
 			.SetScale(Vector3(meshSize, meshSize, meshSize))
 			.SetPosition(position);
 
-		renderObject = new RenderObject(&transform, mesh, nullptr, shader);
-		renderObject->SetRigged(true);
-		int meshLayers = mesh->GetSubMeshCount();
+		renderObject = new RenderObject(&transform, mesh, texture, shader);
+		renderObject->SetColour(Vector4(1, 1, 0, 1));
+		//renderObject->SetRigged(true);
+		/*int meshLayers = mesh->GetSubMeshCount();
 		for (int i = 0; i < meshLayers; i++) {
 			renderObject->AddTexture(material->GetMaterialForLayer(i)->GetEntry("Diffuse"));
-		}
+		}*/
 		physicsObject = new PhysicsObject(&transform, boundingVolume);
 
 		physicsObject->SetInverseMass(inverseMass);
 		physicsObject->InitSphereInertia();
 		layer = Layer::OtherObjects;
-		renderObject->animation = animation;
+		//renderObject->animation = animation;
+
 	}
 	void Update(float dt) {
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
-			currentRunSpeed = runSpeed;
+			currentRunSpeed = -runSpeed;
 			//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
 		}
 		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
-			currentRunSpeed = -runSpeed;
+			currentRunSpeed = runSpeed;
 			//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
 		}
 		else {
@@ -75,11 +77,11 @@ public:
 			physicsObject->AddForce(Vector3(0, 20, 0));
 		}
 		
-		renderObject->frameTime -= dt;
+		/*renderObject->frameTime -= dt;
 		while (renderObject->frameTime < 0.0f) {
 			renderObject->currentFrame = (renderObject->currentFrame + 1) % renderObject->animation->GetFrameCount();
 			renderObject->frameTime += 1.0f / renderObject->animation->GetFrameRate();
-		}
+		}*/
 	}
 	~Animal() {}
 	virtual void OnCollisionBegin(GameObject* otherObject) {

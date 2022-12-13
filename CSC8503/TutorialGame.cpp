@@ -43,24 +43,19 @@ for this module, even in the coursework, but you can add it if you like!
 void TutorialGame::InitialiseAssets() {
 	meshes.insert(std::make_pair("cubeMesh", renderer->LoadMesh("cube.msh")));
 	meshes.insert(std::make_pair("sphereMesh", renderer->LoadMesh("sphere.msh")));
-	meshes.insert(std::make_pair("charMesh", renderer->LoadMesh("goat.msh")));
+	meshes.insert(std::make_pair("goatMesh", renderer->LoadMesh("goat.msh")));
 	meshes.insert(std::make_pair("enemyMesh", renderer->LoadMesh("Keeper.msh")));
 	meshes.insert(std::make_pair("coinMesh", renderer->LoadMesh("coin.msh")));
 	meshes.insert(std::make_pair("capsuleMesh", renderer->LoadMesh("capsule.msh")));
-	meshes.insert(std::make_pair("wolfMesh", renderer->LoadMesh("wolf/wolf.msh")));
 
-	meshMaterials.insert(std::make_pair("goat_mat", new MeshMaterial("goat.mat")));
-	meshMaterials.insert(std::make_pair("wolfMat", new MeshMaterial("wolf/wolf.mat")));
-
-	meshAnimations.insert(std::make_pair("wolfAnimDefault", new MeshAnimation("wolf/wolf_running.anm")));
-
-	meshMaterials.at("goat_mat")->LoadTextures();
-	meshMaterials.at("wolfMat")->LoadTextures();
+	meshMaterials.insert(std::make_pair("goatMat", new MeshMaterial("goat.mat")));
+	//meshMaterials.at("goatMat")->LoadTextures();
 
 	textures.insert(std::make_pair("basicTex", renderer->LoadTexture("checkerboard.png")));
 	textures.insert(std::make_pair("grassTex", renderer->LoadTexture("grass.jpg")));
 	textures.insert(std::make_pair("coinTex", renderer->LoadTexture("coin.png")));
 	textures.insert(std::make_pair("floorTex", renderer->LoadTexture("ground.png")));
+	textures.insert(std::make_pair("goatTex", renderer->LoadTexture("goat1.jpg")));
 
 
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
@@ -438,32 +433,9 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 }
 
 GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
-	float meshSize		= 1.0f;
-	float inverseMass	= 0.5f;
-
-	GameObject* character = new GameObject();
-	SphereVolume* volume  = new SphereVolume(1.0f);
-
-	character->SetBoundingVolume((CollisionVolume*)volume);
-
-	character->GetTransform()
-		.SetScale(Vector3(meshSize, meshSize, meshSize))
-		.SetPosition(position);
-
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("charMesh"), nullptr, shaders.at("basicShader")));
-	int meshLayers = meshes.at("charMesh")->GetSubMeshCount();
-	for (int i = 0; i < meshLayers; i++) {
-		character->GetRenderObject()->AddTexture(meshMaterials.at("goat_mat")->GetMaterialForLayer(i)->GetEntry("Diffuse"));
-	}
-	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-
-	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-	character->GetPhysicsObject()->InitSphereInertia();
-	character->SetLayer(Layer::OtherObjects);
-
-	world->AddGameObject(character);
-
-	return character;
+	player = new Animal(position, meshes.at("goatMesh"), textures.at("goatTex"), nullptr, nullptr, shaders.at("basicShader"));
+	world->AddGameObject(player);
+	return player;
 }
 
 GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
@@ -494,11 +466,6 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 
 void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("basicShader")));
-}
-
-void TutorialGame::AddWolfToWorld(const Vector3& position) {
-	player = new Animal(position, meshes.at("wolfMesh"), meshMaterials.at("wolfMat"), meshAnimations.at("wolfAnimDefault"), shaders.at("skinningShader"));
-	world->AddGameObject(player);
 }
 
 void TutorialGame::AddNavigationGrid() {
@@ -536,10 +503,9 @@ void TutorialGame::InitDefaultFloor() {
 }
 
 void TutorialGame::InitGameExamples() {
-	AddPlayerToWorld(Vector3(0, 5, 0));
+	AddPlayerToWorld(Vector3(15, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
 	AddCoinsToWorld(Vector3(5, -15, 0));
-	AddWolfToWorld(Vector3(15, 5, 0));
 }
 
 void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {
