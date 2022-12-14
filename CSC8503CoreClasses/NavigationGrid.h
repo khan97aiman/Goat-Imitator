@@ -38,7 +38,7 @@ namespace NCL {
 		class NavigationGrid : public NavigationMap	{
 		public:
 			NavigationGrid();
-			NavigationGrid(const std::string&filename, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, GameWorld* world);
+			NavigationGrid(const std::string&filename, std::map<std::string, MeshGeometry*>& meshes, std::map<std::string, TextureBase*>& textures, ShaderBase* shader, GameWorld* world);
 			~NavigationGrid();
 
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;

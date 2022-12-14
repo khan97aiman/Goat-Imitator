@@ -1,6 +1,7 @@
 #include "NavigationGrid.h"
 #include "Assets.h"
 #include "Wall.h"
+#include "Coin.h"
 
 #include <fstream>
 
@@ -22,7 +23,7 @@ NavigationGrid::NavigationGrid()	{
 	allNodes	= nullptr;
 }
 
-NavigationGrid::NavigationGrid(const std::string&filename, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, GameWorld* world) : NavigationGrid() {
+NavigationGrid::NavigationGrid(const std::string&filename, std::map<std::string, MeshGeometry*>& meshes, std::map<std::string, TextureBase*>& textures, ShaderBase* shader, GameWorld* world) : NavigationGrid() {
 	std::ifstream infile(Assets::DATADIR + filename);
 
 	infile >> nodeSize;
@@ -39,10 +40,13 @@ NavigationGrid::NavigationGrid(const std::string&filename, MeshGeometry* mesh, T
 			n.type = type == 'x' ? 'x' : '.';
 			n.position = Vector3((float)(x * nodeSize), -15, (float)(y * nodeSize));
 			if (n.type == 'x') {
-				world->AddGameObject(new Wall(n.position, mesh, texture, shader));
+				world->AddGameObject(new Wall(n.position, meshes.at("cubeMesh"), textures.at("grassTex"), shader));
 			}
 			if (type == 's') {
 				startPosition = n.position;
+			}
+			else if (type == 'c') {
+				world->AddGameObject(new Coin(n.position, meshes.at("coinMesh"), textures.at("coinTex"), shader));
 			}
 		}
 	}

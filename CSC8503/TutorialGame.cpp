@@ -8,7 +8,6 @@
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
 #include <Assets.h>
-#include "Coin.h"
 #include <NavigationGrid.h>
 
 using namespace NCL;
@@ -464,12 +463,12 @@ GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
 	return character;
 }
 
-void TutorialGame::AddCoinsToWorld(const Vector3& position) {
-	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("basicShader")));
-}
+//void TutorialGame::AddCoinsToWorld(const Vector3& position) {
+//	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("basicShader")));
+//}
 
 void TutorialGame::AddNavigationGrid() {
-	NavigationGrid grid("TestGrid2.txt", meshes.at("cubeMesh"), textures.at("grassTex"), shaders.at("basicShader"), world);
+	NavigationGrid grid("TestGrid2.txt", meshes, textures, shaders.at("basicShader"), world);
 	player->GetTransform().SetPosition(grid.GetStartPosition());
 }
 
@@ -506,7 +505,7 @@ void TutorialGame::InitDefaultFloor() {
 void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(15, 5, 0));
 	AddEnemyToWorld(Vector3(5, 5, 0));
-	AddCoinsToWorld(Vector3(5, -15, 0));
+	//AddCoinsToWorld(Vector3(5, -15, 0));
 }
 
 void TutorialGame::InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius) {

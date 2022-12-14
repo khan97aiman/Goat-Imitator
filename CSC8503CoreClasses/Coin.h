@@ -2,6 +2,7 @@
 #include <GameObject.h>
 #include <SphereVolume.h>
 #include <Vector3.h>
+#include <Vector4.h>
 #include <ShaderBase.h>
 #include <MeshGeometry.h>
 #include <RenderObject.h>
