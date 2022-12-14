@@ -83,6 +83,7 @@ namespace NCL {
 			
 			std::map<std::string, TextureBase*> textures;
 			std::map<std::string, ShaderBase*> shaders;
+			NavigationGrid* hedgeMaze;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;
@@ -100,8 +101,8 @@ namespace NCL {
 			int pauseTime = 0;
 			int pauseStartTime = 0;
 
-			StateGameObject* AddStateObjectToWorld(const Vector3& position);
-			StateGameObject * testStateObject;
+			//StateGameObject* AddStateObjectToWorld(const Vector3& position);
+			//StateGameObject * testStateObject;
 		};
 	}
 }

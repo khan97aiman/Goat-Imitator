@@ -1,5 +1,5 @@
 #pragma once
-#include <GameObject.h>
+#include "StateGameObject.h"
 #include <AABBVolume.h>
 #include <Vector3.h>
 #include <Vector4.h>
@@ -16,9 +16,9 @@ using namespace CSC8503;
 using namespace Maths;
 using namespace Rendering;
 
-class Enemy : public GameObject {
+class Enemy : public StateGameObject {
 public:
-	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, NavigationGrid* grid) : GameObject() {
+	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, NavigationGrid* grid, GameObject* player) : StateGameObject() {
 		name = "Enemy";
 		float meshSize = 10.0f;
 		float inverseMass = 0.5f;
@@ -38,18 +38,23 @@ public:
 		physicsObject->InitSphereInertia();
 		layer = Layer::OtherObjects;
 		this->grid = grid;
+		this->player = player;
 	}
-	void Update(float dt) {
-		/*NavigationPath outPath;
-		Vector3 startPos(80, -15, 10);
-		Vector3 endPos(80, -15, 80);
-		bool found = grid.FindPath(startPos, endPos, outPath);
-		Vector3 pos;
-		while (outPath.PopWaypoint(pos)) {
-			testNodes.push_back(pos);
-		}*/
-	}
+	//void Update(float dt) {
+	//	/*NavigationPath outPath;
+	//	bool found = grid->FindPath(transform.GetPosition(), player->GetTransform().GetPosition(), outPath);
+	//	Vector3 pos;
+	//	while (outPath.PopWaypoint(pos)) {
+	//		testNodes.push_back(pos);
+	//	}
+	//	for (int i = 1; i < testNodes.size(); ++i) {
+	//		Vector3 a = testNodes[i - 1];
+	//		Vector3 b = testNodes[i];
+	//		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+	//	}*/
+	//}
 	~Enemy() {}
 protected:
 	NavigationGrid* grid;
+	GameObject* player;
 };
