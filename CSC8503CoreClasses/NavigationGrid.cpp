@@ -46,7 +46,7 @@ NavigationGrid::NavigationGrid(const std::string&filename, std::map<std::string,
 				startPosition = n.position;
 			}
 			else if (type == 'c') {
-				world->AddGameObject(new Coin(n.position, meshes.at("coinMesh"), textures.at("coinTex"), shader));
+				//world->AddGameObject(new Coin(n.position, meshes.at("coinMesh"), textures.at("coinTex"), shader));
 			}
 			else if (type == 'e') {
 				enemyPositions.emplace_back(n.position);

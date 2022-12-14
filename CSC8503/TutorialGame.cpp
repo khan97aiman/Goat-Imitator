@@ -139,6 +139,12 @@ void TutorialGame::UpdateGame(float time, float dt) {
 
 		UpdateKeys();
 
+		for (int i = 1; i < testNodes.size(); ++i) {
+			Vector3 a = testNodes[i - 1];
+			Vector3 b = testNodes[i];
+			Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+		}
+
 		/*if (useGravity) {
 			Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
 		}
@@ -449,7 +455,18 @@ void TutorialGame::AddNavigationGrid() {
 	vector<Vector3> enemyPositions = hedgeMaze->GetEnemyPositions();
 	for (const auto& pos : enemyPositions) {
 		AddEnemyToWorld(pos, hedgeMaze);
+		if (&enemyPositions.back() == &pos) {
+			NavigationPath outPath;
+			Vector3 startPos(80 * 2, -15, 10 * 2);
+			Vector3 endPos(80 * 2, -15, 80 * 2);
+			bool found = hedgeMaze->FindPath(pos, hedgeMaze->GetStartPosition(), outPath);
+			Vector3 pos;
+			while (outPath.PopWaypoint(pos)) {
+				testNodes.push_back(pos);
+			}
+		}
 	}
+	
 }
 
 //StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {

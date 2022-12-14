@@ -100,6 +100,7 @@ namespace NCL {
 			int remainingTime = -1;
 			int pauseTime = 0;
 			int pauseStartTime = 0;
+			vector <Vector3 > testNodes;
 
 			//StateGameObject* AddStateObjectToWorld(const Vector3& position);
 			//StateGameObject * testStateObject;
