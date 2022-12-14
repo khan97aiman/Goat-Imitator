@@ -48,20 +48,14 @@ public:
 		outPath.PopWaypoint(nextPos);
 
 		State* chasePlayer = new State([&](float dt)-> void {
-			/*std::cout << "In chase state" << std::endl;
-			std::cout << transform.GetPosition();
-			std::cout << nextPos;
-			std::cout << abs(Vector3(nextPos - transform.GetPosition()).Length()) << std::endl;
-			std::cout << "end\n" << std::endl;*/
-
+			//std::cout << "In chase state" << std::endl;
 			this->Move(dt);
 		});
 		State* shootPlayer = new State([&](float dt)-> void {
 			//std::cout << "In shoot state" << std::endl;
 		});
 		State* idleState = new State([&](float dt)-> void {
-			std::cout << "In idle state" << std::endl;
-			//counter += dt;
+			//std::cout << "In idle state" << std::endl;
 		});
 		stateMachine->AddState(chasePlayer);
 		//stateMachine->AddState(shootPlayer);
@@ -75,7 +69,6 @@ public:
 			if (outPath.PopWaypoint(pos)) {
 				currentPos = nextPos;
 				nextPos = pos;
-				std::cout << "transitioning from idle to chase" << std::endl;
 				return true;
 			}
 			return false;
@@ -83,29 +76,18 @@ public:
 	}
 	void Move(float dt) {
 		Vector3 direction = nextPos - currentPos;
-		//float turnSpeed = -10;
-		//float runSpeed = -10;
-		//if (direction.x > 0) {		//move left
-		//}
-		//else if (direction.x < 0) { //move right
-		//	turnSpeed = -turnSpeed;
-		//}
-		//else if (direction.z > 0) { //move down
-		//}
-		//else if (direction.z < 0) { //move up
-		//	runSpeed = -runSpeed;
-		//}
 		GetPhysicsObject()->AddForce(direction.Normalised() * 4);
-		//transform.IncreaseRotation(Vector3(0, 1, 0), turnSpeed * dt);
-		//transform.IncreasePosition(runSpeed * dt);
-		counter -= dt;
 	}
+	//void Update(float dt) {
+	//	/*outPath.Clear();
+	//	bool found = grid->FindPath(transform.GetPosition(), player->GetTransform().GetPosition(), outPath);
+	//	outPath.PopWaypoint(nextPos);*/
+	//	StateGameObject::Update(dt);
+	//}
 	~Enemy() {}
 protected:
 	NavigationGrid* grid;
 	GameObject* player;
-	vector<Vector3> testNodes;
-	int index = 1;
 	Vector3 currentPos;
 	Vector3 nextPos;
 	NavigationPath outPath;
