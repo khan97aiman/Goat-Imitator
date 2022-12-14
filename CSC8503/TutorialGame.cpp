@@ -470,6 +470,7 @@ void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 
 void TutorialGame::AddNavigationGrid() {
 	NavigationGrid grid("TestGrid2.txt", meshes.at("cubeMesh"), textures.at("grassTex"), shaders.at("basicShader"), world);
+	player->GetTransform().SetPosition(grid.GetStartPosition());
 }
 
 StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {

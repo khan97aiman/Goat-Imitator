@@ -21,7 +21,7 @@ public:
 		float meshSize = 3.0f;
 		float inverseMass = 0.5f;
 
-		SphereVolume* volume = new SphereVolume(1.0f);
+		SphereVolume* volume = new SphereVolume(meshSize);
 
 		boundingVolume = (CollisionVolume*)volume;
 
@@ -42,7 +42,7 @@ public:
 		physicsObject->InitSphereInertia();
 		layer = Layer::OtherObjects;
 		//renderObject->animation = animation;
-
+		transform.IncreaseRotation(Vector3(0, 1, 0), 180);
 	}
 	void Update(float dt) {
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {

@@ -36,10 +36,13 @@ NavigationGrid::NavigationGrid(const std::string&filename, MeshGeometry* mesh, T
 			GridNode&n = allNodes[(gridWidth * y) + x];
 			char type = 0;
 			infile >> type;
-			n.type = type;
+			n.type = type == 'x' ? 'x' : '.';
 			n.position = Vector3((float)(x * nodeSize), -15, (float)(y * nodeSize));
 			if (n.type == 'x') {
 				world->AddGameObject(new Wall(n.position, mesh, texture, shader));
+			}
+			if (type == 's') {
+				startPosition = n.position;
 			}
 		}
 	}
