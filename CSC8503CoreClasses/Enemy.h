@@ -18,7 +18,7 @@ using namespace Rendering;
 
 class Enemy : public GameObject {
 public:
-	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader) : GameObject() {
+	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, NavigationGrid* grid) : GameObject() {
 		name = "Enemy";
 		float meshSize = 10.0f;
 		float inverseMass = 0.5f;
@@ -37,7 +37,19 @@ public:
 		physicsObject->SetInverseMass(inverseMass);
 		physicsObject->InitSphereInertia();
 		layer = Layer::OtherObjects;
+		this->grid = grid;
+	}
+	void Update(float dt) {
+		/*NavigationPath outPath;
+		Vector3 startPos(80, -15, 10);
+		Vector3 endPos(80, -15, 80);
+		bool found = grid.FindPath(startPos, endPos, outPath);
+		Vector3 pos;
+		while (outPath.PopWaypoint(pos)) {
+			testNodes.push_back(pos);
+		}*/
 	}
 	~Enemy() {}
 protected:
+	NavigationGrid* grid;
 };
