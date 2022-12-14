@@ -20,7 +20,7 @@ class Enemy : public GameObject {
 public:
 	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader) : GameObject() {
 		name = "Enemy";
-		float meshSize = 3.0f;
+		float meshSize = 10.0f;
 		float inverseMass = 0.5f;
 
 

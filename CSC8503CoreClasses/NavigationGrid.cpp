@@ -2,6 +2,7 @@
 #include "Assets.h"
 #include "Wall.h"
 #include "Coin.h"
+#include "Enemy.h"
 
 #include <fstream>
 
@@ -47,6 +48,9 @@ NavigationGrid::NavigationGrid(const std::string&filename, std::map<std::string,
 			}
 			else if (type == 'c') {
 				world->AddGameObject(new Coin(n.position, meshes.at("coinMesh"), textures.at("coinTex"), shader));
+			}
+			else if (type == 'e') {
+				world->AddGameObject(new Enemy(n.position, meshes.at("enemyMesh"), textures.at("coinTex"), shader));
 			}
 		}
 	}

@@ -437,31 +437,31 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	return player;
 }
 
-GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
-	float meshSize		= 3.0f;
-	float inverseMass	= 0.5f;
-
-	GameObject* character = new GameObject();
-
-	AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
-	//CapsuleVolume* volume = new CapsuleVolume(0.9 * meshSize, 0.3 * meshSize);
-	character->SetBoundingVolume((CollisionVolume*)volume);
-
-	character->GetTransform()
-		.SetScale(Vector3(meshSize, meshSize, meshSize))
-		.SetPosition(position);
-
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("enemyMesh"), nullptr, shaders.at("basicShader")));
-	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-
-	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-	character->GetPhysicsObject()->InitSphereInertia();
-	character->SetLayer(Layer::OtherObjects);
-
-	world->AddGameObject(character);
-
-	return character;
-}
+//GameObject* TutorialGame::AddEnemyToWorld(const Vector3& position) {
+//	float meshSize		= 3.0f;
+//	float inverseMass	= 0.5f;
+//
+//	GameObject* character = new GameObject();
+//
+//	AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+//	//CapsuleVolume* volume = new CapsuleVolume(0.9 * meshSize, 0.3 * meshSize);
+//	character->SetBoundingVolume((CollisionVolume*)volume);
+//
+//	character->GetTransform()
+//		.SetScale(Vector3(meshSize, meshSize, meshSize))
+//		.SetPosition(position);
+//
+//	character->SetRenderObject(new RenderObject(&character->GetTransform(), meshes.at("enemyMesh"), nullptr, shaders.at("basicShader")));
+//	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
+//
+//	character->GetPhysicsObject()->SetInverseMass(inverseMass);
+//	character->GetPhysicsObject()->InitSphereInertia();
+//	character->SetLayer(Layer::OtherObjects);
+//
+//	world->AddGameObject(character);
+//
+//	return character;
+//}
 
 //void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 //	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("basicShader")));
@@ -504,7 +504,7 @@ void TutorialGame::InitDefaultFloor() {
 
 void TutorialGame::InitGameExamples() {
 	AddPlayerToWorld(Vector3(15, 5, 0));
-	AddEnemyToWorld(Vector3(5, 5, 0));
+	//AddEnemyToWorld(Vector3(5, 5, 0));
 	//AddCoinsToWorld(Vector3(5, -15, 0));
 }
 

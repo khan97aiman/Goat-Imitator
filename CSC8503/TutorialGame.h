@@ -58,7 +58,7 @@ namespace NCL {
 			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
 
 			GameObject* AddPlayerToWorld(const Vector3& position);
-			GameObject* AddEnemyToWorld(const Vector3& position);
+			//GameObject* AddEnemyToWorld(const Vector3& position);
 			//void AddCoinsToWorld(const Vector3& position);
 			void AddNavigationGrid();
 
