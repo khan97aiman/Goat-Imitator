@@ -50,6 +50,7 @@ public:
 			//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
 		}
 		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
+			//transform.IncreaseRotation(Vector3(0, 1, 0), 180);
 			currentRunSpeed = runSpeed;
 			//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
 		}
@@ -100,7 +101,7 @@ public:
 	int GetPoints() { return points; }
 protected:
 	float runSpeed = 50;	// unit: m/s
-	float turnSpeed = 50.0f; // unit: degrees/s
+	float turnSpeed = 100.0f; // unit: degrees/s
 	float currentRunSpeed = 0.0f; 
 	float currentTurnSpeed = 0.0f;
 	int points = 0;
