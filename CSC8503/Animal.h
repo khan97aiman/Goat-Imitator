@@ -74,7 +74,8 @@ public:
 		transform.IncreasePosition(currentRunSpeed * dt);
 
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SPACE)) {
-			physicsObject->AddForce(Vector3(0, 20, 0));
+			if (transform.GetPosition().y < -10) 
+				physicsObject->AddForce(Vector3(0, 100, 0));
 		}
 		
 		/*renderObject->frameTime -= dt;
