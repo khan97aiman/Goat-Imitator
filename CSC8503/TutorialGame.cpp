@@ -29,6 +29,7 @@ TutorialGame::TutorialGame()	{
 
 	InitialiseAssets();
 	physics->UseGravity(useGravity);
+	hedgeMaze = nullptr;
 
 
 	State* splash = new State([&](float dt)-> void {
@@ -315,6 +316,7 @@ void TutorialGame::InitCamera() {
 void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
+	if (!hedgeMaze) delete hedgeMaze;
 
 	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 	remainingTime = 30;
