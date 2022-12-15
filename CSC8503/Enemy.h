@@ -27,7 +27,7 @@ public:
 		float inverseMass = 0.5f;
 
 
-		AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
+		AABBVolume* volume = new AABBVolume(Vector3(0.25f, 0.7f, 0.25f) * meshSize);
 		SetBoundingVolume((CollisionVolume*)volume);
 
 		transform
@@ -42,8 +42,9 @@ public:
 		layer = Layer::OtherObjects;
 		this->grid = grid;
 		this->player = player;
+		prevPlayerPosition = grid->GetGridPosition(player->GetTransform().GetPosition());
 
-		bool found = grid->FindPath(transform.GetPosition(), player->GetTransform().GetPosition(), outPath);
+		bool found = grid->FindPath(grid->GetGridPosition(transform.GetPosition()), grid->GetGridPosition(player->GetTransform().GetPosition()), outPath);
 		outPath.PopWaypoint(currentPos);
 		outPath.PopWaypoint(nextPos);
 
@@ -62,7 +63,7 @@ public:
 		stateMachine->AddState(idleState);
 
 		stateMachine->AddTransition(new StateTransition(chasePlayer, idleState, [&]()-> bool {
-			return abs(Vector3(nextPos - transform.GetPosition()).Length()) < 10;
+			return Vector3(nextPos - transform.GetPosition()).Length() < 10;
 		}));
 		stateMachine->AddTransition(new StateTransition(idleState, chasePlayer, [&]()-> bool {
 			Vector3 pos; 
@@ -75,20 +76,26 @@ public:
 		}));
 	}
 	void Move(float dt) {
-		Vector3 direction = nextPos - currentPos;
-		GetPhysicsObject()->AddForce(direction.Normalised() * 4);
+		Vector3 direction = nextPos - transform.GetPosition();
+		GetPhysicsObject()->AddForce(direction.Normalised() * 5);
 	}
-	//void Update(float dt) {
-	//	/*outPath.Clear();
-	//	bool found = grid->FindPath(transform.GetPosition(), player->GetTransform().GetPosition(), outPath);
-	//	outPath.PopWaypoint(nextPos);*/
-	//	StateGameObject::Update(dt);
-	//}
+	void Update(float dt) {
+		Debug::DrawLine(currentPos, nextPos, Vector4(1, 0, 0, 1), 10);
+		if (prevPlayerPosition != grid->GetGridPosition(player->GetTransform().GetPosition())) {
+			prevPlayerPosition = grid->GetGridPosition(player->GetTransform().GetPosition());
+			outPath.Clear();
+			bool found = grid->FindPath(grid->GetGridPosition(transform.GetPosition()), grid->GetGridPosition(player->GetTransform().GetPosition()), outPath);
+			outPath.PopWaypoint(currentPos);
+			outPath.PopWaypoint(nextPos);
+		}
+		StateGameObject::Update(dt);
+	}
 	~Enemy() {}
 protected:
 	NavigationGrid* grid;
 	GameObject* player;
 	Vector3 currentPos;
 	Vector3 nextPos;
+	Vector3 prevPlayerPosition;
 	NavigationPath outPath;
 };

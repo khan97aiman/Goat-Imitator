@@ -44,6 +44,7 @@ namespace NCL {
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
 			Vector3 GetStartPosition() { return startPosition; }
 			vector<Vector3> GetEnemyPositions() { return enemyPositions; }
+			Vector3 GetGridPosition(const Vector3& worldPos);
 
 		protected:
 			bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;

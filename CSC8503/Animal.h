@@ -21,7 +21,7 @@ public:
 		float meshSize = 3.0f;
 		float inverseMass = 0.5f;
 
-		SphereVolume* volume = new SphereVolume(meshSize);
+		SphereVolume* volume = new SphereVolume(meshSize * 1.1);
 
 		boundingVolume = (CollisionVolume*)volume;
 

@@ -164,6 +164,21 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 	return false; //open list emptied out with no path!
 }
 
+Vector3 NCL::CSC8503::NavigationGrid::GetGridPosition(const Vector3& worldPos) {
+	int y = 0;
+	for (; y < gridHeight; ++y) {
+		if (((worldPos.z + nodeSize / 2) - (y * nodeSize)) < nodeSize)
+			break;
+	}
+	int x = 0;
+	for (; x < gridWidth; ++x) {
+		if (((worldPos.x + nodeSize / 2) - (x * nodeSize)) < nodeSize)
+			break;
+	}
+	GridNode& n = allNodes[(gridWidth * y) + x];
+	return n.position;
+}
+
 
 bool NavigationGrid::NodeInList(GridNode* n, std::vector<GridNode*>& list) const {
 	std::vector<GridNode*>::iterator i = std::find(list.begin(), list.end(), n);
