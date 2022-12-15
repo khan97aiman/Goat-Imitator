@@ -95,7 +95,6 @@ void TutorialGame::UpdateGame(float time, float dt) {
 	if (player->GetPoints() == 1) {
 		gameState = GameState::WON;
 	}*/
-
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
 		if (gameState == GameState::PAUSED) {
 			gameState = GameState::RUNNING;
@@ -113,6 +112,9 @@ void TutorialGame::UpdateGame(float time, float dt) {
 		gameState = GameState::RUNNING;
 		pauseTime = 0;
 		idleTime = time;
+	}
+	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && gameState == GameState::SPLASH) {
+		gameState = GameState::INIT;
 	}
 
 	if (gameState == GameState::RUNNING) {
@@ -186,8 +188,15 @@ void TutorialGame::UpdateGame(float time, float dt) {
 		renderer->Update(dt);
 		physics->Update(dt);
 
-		Debug::UpdateRenderables(dt);
+		
 		remainingTime = totalTimeAllowed - ((int)time - idleTime) + pauseTime;
+	}
+	else if (gameState == GameState::SPLASH) {
+		Debug::Print("Collect 10 coins, then go to Don Duck for survival", Vector2(5, 30), Vector4(1, 1, 0, 1));
+		Debug::Print("Going to Don without enough coins will get you killed", Vector2(0, 45), Vector4(1, 1, 0, 1));
+		Debug::Print("Hide from enemies or shoot them", Vector2(25, 60), Vector4(1, 1, 0, 1));
+		Debug::Print("Press Space to Continue", Vector2(30, 75), Vector4(1, 0, 0, 1));
+		renderer->Render();
 	}
 	else if (gameState == GameState::INIT) {
 		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
@@ -213,6 +222,7 @@ void TutorialGame::UpdateGame(float time, float dt) {
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 		renderer->Render();
 	}
+	Debug::UpdateRenderables(dt);
 }
 
 void TutorialGame::UpdateKeys() {

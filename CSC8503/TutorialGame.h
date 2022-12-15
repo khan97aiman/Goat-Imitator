@@ -12,6 +12,7 @@
 #include <NavigationGrid.h>
 
 enum class GameState {
+	SPLASH,
 	INIT,
 	RUNNING,
 	PAUSED,
@@ -94,7 +95,8 @@ namespace NCL {
 
 			GameObject* objClosest = nullptr;
 			Animal* player = nullptr;
-			GameState gameState = GameState::INIT;
+			GameState gameState = GameState::SPLASH;
+	public:
 			int idleTime = 0;
 			int totalTimeAllowed = 30;
 			int remainingTime = -1;

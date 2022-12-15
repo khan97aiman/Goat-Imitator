@@ -50,7 +50,7 @@ int main() {
 		return -1;
 	}	
 
-	w->ShowOSPointer(false);
+	w->ShowOSPointer(true);
 	w->LockMouseToWindow(true);
 
 	TutorialGame g;
