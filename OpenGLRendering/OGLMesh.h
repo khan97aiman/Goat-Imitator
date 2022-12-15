@@ -20,6 +20,7 @@ namespace NCL {
 			friend class OGLRenderer;
 			OGLMesh();
 			OGLMesh(const std::string&filename);
+			static OGLMesh* GenerateQuad();
 			~OGLMesh();
 
 			void RecalculateNormals();

@@ -36,6 +36,29 @@ OGLMesh::OGLMesh(const std::string&filename) : MeshGeometry(filename){
 	indexBuffer = 0;
 }
 
+
+OGLMesh* OGLMesh::GenerateQuad() {
+	OGLMesh* m = new OGLMesh();
+	m->primType = TriangleStrip;
+	m->positions.emplace_back(Vector3(-1.0f, 1.0f, 0.0f));
+	m->positions.emplace_back(Vector3(-1.0f, -1.0f, 0.0f));
+	m->positions.emplace_back(Vector3(1.0f, 1.0f, 0.0f));
+	m->positions.emplace_back(Vector3(1.0f, -1.0f, 0.0f));
+	m->texCoords.emplace_back(Vector2(0.0f, 1.0f));
+	m->texCoords.emplace_back(Vector2(0.0f, 0.0f));
+	m->texCoords.emplace_back(Vector2(1.0f, 1.0f));
+	m->texCoords.emplace_back(Vector2(1.0f, 0.0f));
+
+	for (int i = 0; i < 4; ++i) {
+		m->colours.emplace_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+		m->normals.emplace_back(Vector3(0.0f, 0.0f, -1.0f)); //New!
+		m->tangents.emplace_back(Vector4(1.0f, 0.0f, 0.0f, 1.0f)); //New!
+	}
+
+	m->UploadToGPU();
+	return m;
+}
+
 OGLMesh::~OGLMesh()	{
 	glDeleteVertexArrays(1, &vao);			//Delete our VAO
 	glDeleteBuffers(VertexAttribute::MAX_ATTRIBUTES, attributeBuffers);	//Delete our VBOs
