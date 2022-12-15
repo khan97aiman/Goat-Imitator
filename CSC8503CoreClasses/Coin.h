@@ -36,7 +36,7 @@ public:
 
 		physicsObject->SetInverseMass(inverseMass);
 		physicsObject->InitSphereInertia();
-		layer = Layer::OtherObjects;
+		layer = Layer::Collectibles;
 	}
 	void Update(float dt) {
 		transform.IncreaseRotation(Vector3(0, 1, 0), rotation * dt);

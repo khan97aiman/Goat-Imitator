@@ -40,7 +40,7 @@ public:
 
 		physicsObject->SetInverseMass(inverseMass);
 		physicsObject->InitSphereInertia();
-		layer = Layer::OtherObjects;
+		layer = Layer::Player;
 		//renderObject->animation = animation;
 		transform.IncreaseRotation(Vector3(0, 1, 0), 180);
 	}

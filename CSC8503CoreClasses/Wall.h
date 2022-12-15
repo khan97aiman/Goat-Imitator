@@ -37,7 +37,7 @@ public:
 
 		physicsObject->SetInverseMass(inverseMass);
 		physicsObject->InitSphereInertia();
-		layer = Layer::OtherObjects;
+		layer = Layer::StaticObjects;
 	}
 	~Wall() {}
 protected:

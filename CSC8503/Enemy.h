@@ -39,7 +39,7 @@ public:
 
 		physicsObject->SetInverseMass(inverseMass);
 		physicsObject->InitSphereInertia();
-		layer = Layer::OtherObjects;
+		layer = Layer::Enemy;
 		this->grid = grid;
 		this->player = player;
 		prevPlayerPosition = grid->GetGridPosition(player->GetTransform().GetPosition());

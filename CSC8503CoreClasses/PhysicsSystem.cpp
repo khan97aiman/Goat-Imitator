@@ -9,6 +9,8 @@
 #include "Debug.h"
 #include "Window.h"
 #include <functional>
+#include "Layer.h"
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -318,6 +320,28 @@ void PhysicsSystem::BroadPhase() {
 			for (auto j = std::next(i); j != data.end(); ++j) {
 				//is this pair of items already in the collision set -
 				//if the same pair is in another quadtree node together etc
+				int layerMask = COLLISION_LAYER_MASK.at((*i).object->GetLayer());
+
+				std::vector<int> activeLayers;
+				int layer = 0; // start at bit index 0
+
+				while (layerMask != 0) { // If the number is 0, no bits are set
+
+					// check if the bit at the current index 0 is set
+					if ((layerMask & 1) == 1) {
+						activeLayers.push_back(layer);
+					}
+
+					// advance to the next bit position to check
+					layerMask = layerMask >> 1; // shift all bits one position to the right
+					layer = layer + 1;              // so we are now looking at the next index.
+				}
+
+				//checking if object i can interact with object j
+				if (!(std::count(activeLayers.begin(), activeLayers.end(), (int)(*j).object->GetLayer()))) {
+					continue;
+				}
+
 				info.a = std::min((*i).object, (*j).object);
 				info.b = std::max((*i).object, (*j).object);
 				broadphaseCollisions.insert(info);
