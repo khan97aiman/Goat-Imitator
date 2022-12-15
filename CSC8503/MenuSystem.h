@@ -13,7 +13,11 @@ public:
 	MenuSystem(TutorialGame* g) : StateMachine() {
 		
 		State* splash = new State([&](float dt)-> void {
-			
+			Debug::Print("Collect 10 coins, then go to Don Duck for survival", Vector2(5, 30), Vector4(1, 1, 0, 1));
+			Debug::Print("Going to Don without enough coins will get you killed", Vector2(0, 45), Vector4(1, 1, 0, 1));
+			Debug::Print("Hide from enemies or shoot them", Vector2(25, 60), Vector4(1, 1, 0, 1));
+			Debug::Print("Press Space to Continue", Vector2(30, 75), Vector4(1, 0, 0, 1));
+			g->Render();
 		});
 		State* init = new State([&](float dt)-> void {
 		});
@@ -52,6 +56,12 @@ public:
 			return g->remainingTime == 0;
 		}));
 		AddTransition(new StateTransition(running, won, [&]()-> bool {
+			return false;
+		}));
+		AddTransition(new StateTransition(won, running, [&]()-> bool {
+			return false;
+		}));
+		AddTransition(new StateTransition(lost, running, [&]()-> bool {
 			return false;
 		}));
 	}

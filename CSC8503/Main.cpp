@@ -75,7 +75,8 @@ int main() {
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
-		g.UpdateGame(time, dt);
+		//g.UpdateGame(dt);
+		g.menuSystem.Update(dt);
 	}
 	Window::DestroyGameWindow();
 }

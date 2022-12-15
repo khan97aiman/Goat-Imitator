@@ -29,6 +29,89 @@ TutorialGame::TutorialGame()	{
 
 	InitialiseAssets();
 	physics->UseGravity(useGravity);
+
+
+	State* splash = new State([&](float dt)-> void {
+		Debug::Print("Collect 10 coins, then go to Don Duck for survival", Vector2(5, 30), Vector4(1, 1, 0, 1));
+		Debug::Print("Going to Don without enough coins will get you killed", Vector2(0, 45), Vector4(1, 1, 0, 1));
+		Debug::Print("Hide from enemies or shoot them", Vector2(25, 60), Vector4(1, 1, 0, 1));
+		Debug::Print("Press Space to Continue", Vector2(30, 75), Vector4(1, 0, 0, 1));
+		renderer->Render();
+		Debug::UpdateRenderables(dt);
+	});
+	State* init = new State([&](float dt)-> void {
+		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
+		Debug::Print("Press ESC to Quit Playing", Vector2(25, 60), Vector4(1, 1, 1, 1));
+		renderer->Render();
+		Debug::UpdateRenderables(dt);
+	});
+	State* running = new State([&](float dt)-> void {
+		UpdateGame(dt);
+	});
+	State* newGame = new State([&](float dt)-> void {
+		InitWorld();
+	});
+	State* paused = new State([&](float dt)-> void {
+		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
+		Debug::Print("Press P to Resume Playing", Vector2(25, 60), Vector4(1, 1, 1, 1));
+		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
+		renderer->Render();
+		Debug::UpdateRenderables(dt);
+	});
+	State* lost = new State([&](float dt)-> void {
+		Debug::Print("YOU LOST, LOSER!", Vector2(35, 45), Vector4(1, 0, 0, 1));
+		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
+		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
+		renderer->Render();
+		Debug::UpdateRenderables(dt);
+	});
+	State* won = new State([&](float dt)-> void {
+		Debug::Print("YOU WON, YAYY!", Vector2(35, 45), Vector4(1, 0, 1, 1));
+		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
+		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
+		renderer->Render();
+		Debug::UpdateRenderables(dt);
+	});
+
+	menuSystem.AddState(splash);
+	menuSystem.AddState(init);
+	menuSystem.AddState(running);
+	menuSystem.AddState(newGame);
+	menuSystem.AddState(paused);
+	menuSystem.AddState(lost);
+	menuSystem.AddState(won);
+
+
+	menuSystem.AddTransition(new StateTransition(splash, init, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE);
+	}));
+	menuSystem.AddTransition(new StateTransition(init, running, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
+	}));
+	menuSystem.AddTransition(new StateTransition(running, paused, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::P);
+	}));
+	menuSystem.AddTransition(new StateTransition(paused, running, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::P);
+	}));
+	menuSystem.AddTransition(new StateTransition(paused, newGame, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
+	}));
+	menuSystem.AddTransition(new StateTransition(running, lost, [&]()-> bool {
+		return remainingTime == 0;
+	}));
+	menuSystem.AddTransition(new StateTransition(running, won, [&]()-> bool { //TODO
+		return false; 
+	}));
+	menuSystem.AddTransition(new StateTransition(won, newGame, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
+	}));
+	menuSystem.AddTransition(new StateTransition(lost, newGame, [&]()-> bool {
+		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
+	}));
+	menuSystem.AddTransition(new StateTransition(newGame, running, [&]()-> bool {
+		return true;
+	}));
 }
 
 /*
@@ -88,140 +171,79 @@ TutorialGame::~TutorialGame()	{
 	delete world;
 }
 
-void TutorialGame::UpdateGame(float time, float dt) {
-	/*if (remainingTime == 0) {
-		gameState = GameState::LOST;
+void TutorialGame::UpdateGame(float dt) {
+	
+	if (!inSelectionMode) {
+		world->GetMainCamera()->UpdateCamera(dt);
 	}
-	if (player->GetPoints() == 1) {
-		gameState = GameState::WON;
+	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
+
+	if (lockedObject != nullptr) {
+		Vector3 objPos = lockedObject->GetTransform().GetPosition();
+		Vector3 camPos = objPos + lockedOffset;
+
+		Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
+
+		Matrix4 modelMat = temp.Inverse();
+
+		Quaternion q(modelMat);
+		Vector3 angles = q.ToEuler(); //nearly there now!
+
+		world->GetMainCamera()->SetPosition(camPos);
+		world->GetMainCamera()->SetPitch(angles.x);
+		world->GetMainCamera()->SetYaw(angles.y);
+	}
+
+	UpdateKeys();
+
+	for (int i = 1; i < testNodes.size(); ++i) {
+		Vector3 a = testNodes[i - 1];
+		Vector3 b = testNodes[i];
+		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+	}
+
+	/*if (useGravity) {
+		Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
+	}
+	else {
+		Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
 	}*/
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
-		if (gameState == GameState::PAUSED) {
-			gameState = GameState::RUNNING;
-			int diff = time - pauseStartTime;
-			pauseTime += diff;
-		}
-		else if (gameState == GameState::RUNNING) {
-			gameState = GameState::PAUSED;
-			pauseStartTime = time;
-		}
-	}
-	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::N)) {
-		if (gameState != GameState::INIT)
-			InitWorld();
-		gameState = GameState::RUNNING;
-		pauseTime = 0;
-		idleTime = time;
-	}
-	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE) && gameState == GameState::SPLASH) {
-		gameState = GameState::INIT;
-	}
 
-	if (gameState == GameState::RUNNING) {
-		if (!inSelectionMode) {
-			world->GetMainCamera()->UpdateCamera(dt);
-		}
-		world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
+	RayCollision closestCollision;
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K) && selectionObject) {
+		Vector3 rayPos;
+		Vector3 rayDir;
 
-		if (lockedObject != nullptr) {
-			Vector3 objPos = lockedObject->GetTransform().GetPosition();
-			Vector3 camPos = objPos + lockedOffset;
+		rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
 
-			Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
+		rayPos = selectionObject->GetTransform().GetPosition();
 
-			Matrix4 modelMat = temp.Inverse();
+		Ray r = Ray(rayPos, rayDir);
 
-			Quaternion q(modelMat);
-			Vector3 angles = q.ToEuler(); //nearly there now!
-
-			world->GetMainCamera()->SetPosition(camPos);
-			world->GetMainCamera()->SetPitch(angles.x);
-			world->GetMainCamera()->SetYaw(angles.y);
-		}
-
-		UpdateKeys();
-
-		for (int i = 1; i < testNodes.size(); ++i) {
-			Vector3 a = testNodes[i - 1];
-			Vector3 b = testNodes[i];
-			Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
-		}
-
-		/*if (useGravity) {
-			Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
-		}
-		else {
-			Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
-		}*/
-
-		RayCollision closestCollision;
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::K) && selectionObject) {
-			Vector3 rayPos;
-			Vector3 rayDir;
-
-			rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
-
-			rayPos = selectionObject->GetTransform().GetPosition();
-
-			Ray r = Ray(rayPos, rayDir);
-
-			if (world->Raycast(r, closestCollision, true, selectionObject)) {
-				if (objClosest) {
-					objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-				}
-				objClosest = (GameObject*)closestCollision.node;
-
-				objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
+		if (world->Raycast(r, closestCollision, true, selectionObject)) {
+			if (objClosest) {
+				objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
 			}
+			objClosest = (GameObject*)closestCollision.node;
+
+			objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
 		}
+	}
 
-		Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
+	Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
 
-	//	SelectObject();
-	//	MoveSelectedObject();
-		Debug::Print("Remaining Time: " + std::to_string(remainingTime), Vector2(5, 5), Vector4(1, 0, 0, 1));
-		Debug::Print("P: Pause", Vector2(5, 90), Vector4(1, 1, 1, 1));
-		Debug::Print("Coins Collected: X" + std::to_string(player->GetPoints()), Vector2(5, 95), Vector4(1, 1, 0, 1));
+//	SelectObject();
+//	MoveSelectedObject();
+	Debug::Print("Remaining Time: " + std::to_string(remainingTime), Vector2(5, 5), Vector4(1, 0, 0, 1));
+	Debug::Print("P: Pause", Vector2(5, 90), Vector4(1, 1, 1, 1));
+	Debug::Print("Coins Collected: X" + std::to_string(player->GetPoints()), Vector2(5, 95), Vector4(1, 1, 0, 1));
 
-		renderer->Render();
-		world->UpdateWorld(dt);
-		renderer->Update(dt);
-		physics->Update(dt);
+	renderer->Render();
+	world->UpdateWorld(dt);
+	renderer->Update(dt);
+	physics->Update(dt);
 
-		
-		remainingTime = totalTimeAllowed - ((int)time - idleTime) + pauseTime;
-	}
-	else if (gameState == GameState::SPLASH) {
-		Debug::Print("Collect 10 coins, then go to Don Duck for survival", Vector2(5, 30), Vector4(1, 1, 0, 1));
-		Debug::Print("Going to Don without enough coins will get you killed", Vector2(0, 45), Vector4(1, 1, 0, 1));
-		Debug::Print("Hide from enemies or shoot them", Vector2(25, 60), Vector4(1, 1, 0, 1));
-		Debug::Print("Press Space to Continue", Vector2(30, 75), Vector4(1, 0, 0, 1));
-		renderer->Render();
-	}
-	else if (gameState == GameState::INIT) {
-		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
-		Debug::Print("Press ESC to Quit Playing", Vector2(25, 60), Vector4(1, 1, 1, 1)); 
-		renderer->Render();
-	}
-	else if (gameState == GameState::PAUSED) {
-		Debug::Print("Press N to Start a New Game", Vector2(25, 45), Vector4(1, 1, 1, 1));
-		Debug::Print("Press P to Resume Playing", Vector2(25, 60), Vector4(1, 1, 1, 1));
-		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
-		renderer->Render();
-	}
-	else if (gameState == GameState::WON) {
-		Debug::Print("YOU WON, YAYY!", Vector2(35, 45), Vector4(1, 0, 1, 1));
-		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
-		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
-
-		renderer->Render();
-	}
-	else if (gameState == GameState::LOST) {
-		Debug::Print("YOU LOST, LOSER!", Vector2(35, 45), Vector4(1, 0, 0, 1));
-		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
-		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
-		renderer->Render();
-	}
+	remainingTime = remainingTime - dt;
 	Debug::UpdateRenderables(dt);
 }
 
@@ -347,7 +369,7 @@ void TutorialGame::InitWorld() {
 	physics->Clear();
 
 	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
-
+	remainingTime = 30;
 	InitGameExamples();
 	InitDefaultFloor();
 	//testStateObject = AddStateObjectToWorld(Vector3(15, 10, 0));

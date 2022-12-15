@@ -10,15 +10,16 @@
 #include <MeshAnimation.h>
 #include "Animal.h"
 #include <NavigationGrid.h>
+#include <StateMachine.h>
 
-enum class GameState {
-	SPLASH,
-	INIT,
-	RUNNING,
-	PAUSED,
-	LOST,
-	WON,
-};
+//enum class GameState {
+//	SPLASH,
+//	INIT,
+//	RUNNING,
+//	PAUSED,
+//	LOST,
+//	WON,
+//};
 namespace NCL {
 	namespace CSC8503 {
 		class TutorialGame		{
@@ -26,7 +27,7 @@ namespace NCL {
 			TutorialGame();
 			~TutorialGame();
 
-			virtual void UpdateGame(float time, float dt);
+			virtual void UpdateGame(float dt);
 
 		protected:
 			void InitialiseAssets();
@@ -95,15 +96,11 @@ namespace NCL {
 
 			GameObject* objClosest = nullptr;
 			Animal* player = nullptr;
-			GameState gameState = GameState::SPLASH;
-	public:
-			int idleTime = 0;
-			int totalTimeAllowed = 30;
-			int remainingTime = -1;
-			int pauseTime = 0;
-			int pauseStartTime = 0;
+			//GameState gameState = GameState::SPLASH;
+			float remainingTime = 30;
 			vector <Vector3 > testNodes;
-
+		public:
+			StateMachine menuSystem;
 			//StateGameObject* AddStateObjectToWorld(const Vector3& position);
 			//StateGameObject * testStateObject;
 		};
