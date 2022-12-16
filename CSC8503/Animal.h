@@ -45,34 +45,81 @@ public:
 		transform.IncreaseRotation(Vector3(0, 1, 0), 180);
 	}
 	void Update(float dt) {
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
-			currentRunSpeed = -runSpeed;
-			physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
-		}
-		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
-			//transform.IncreaseRotation(Vector3(0, 1, 0), 180);
-			currentRunSpeed = runSpeed;
-			physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
+
+		if (forceControl) {
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
+				currentRunSpeed = -runSpeed;
+				physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
+			}
+			else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
+				//transform.IncreaseRotation(Vector3(0, 1, 0), 180);
+				currentRunSpeed = runSpeed;
+				physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
+			}
+			else {
+				currentRunSpeed = 0;
+			}
+
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
+				currentTurnSpeed = turnSpeed;
+				physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
+			}
+			else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
+				currentTurnSpeed = -turnSpeed;
+				physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
+			}
+			else {
+				currentTurnSpeed = 0;
+			}
+
+			physicsObject->AddTorque(Vector3(0, currentTurnSpeed, 0));
+			//transform.IncreaseRotation(Vector3(0, 1, 0), currentTurnSpeed * dt);
+			//transform.IncreasePosition(currentRunSpeed * dt);
 		}
 		else {
-			currentRunSpeed = 0;
+
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
+				currentRunSpeed = -runSpeed;
+				//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
+			}
+			else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
+				//transform.IncreaseRotation(Vector3(0, 1, 0), 180);
+				currentRunSpeed = runSpeed;
+				//physicsObject->AddForce(transform.GetOrientation() * Vector3(0, 0, currentRunSpeed));
+			}
+			else {
+				currentRunSpeed = 0;
+			}
+
+			if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
+				currentTurnSpeed = turnSpeed;
+				//physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
+			}
+			else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
+				currentTurnSpeed = -turnSpeed;
+				//physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
+			}
+			else {
+				currentTurnSpeed = 0;
+			}
+
+			//physicsObject->AddTorque(Vector3(0, currentTurnSpeed, 0));
+			transform.IncreaseRotation(Vector3(0, 1, 0), currentTurnSpeed * dt);
+			transform.IncreasePosition(currentRunSpeed * dt);
 		}
 
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
-			currentTurnSpeed = turnSpeed;
-			physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
-		}
-		else if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
-			currentTurnSpeed = -turnSpeed;
-			physicsObject->AddForce(transform.GetOrientation() * Vector3(currentRunSpeed, 0, 0));
-		}
-		else {
-			currentTurnSpeed = 0;
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F)) {
+			forceControl = !forceControl;
+			if (forceControl) {
+				runSpeed = 30;	// unit: m/s
+				turnSpeed = 10.0f; // unit: degrees/s
+			}
+			else {
+				runSpeed = 50;	// unit: m/s
+				turnSpeed = 100.0f; // unit: degrees/s
+			}
 		}
 
-		physicsObject->AddTorque(Vector3(0, currentTurnSpeed, 0));
-		//transform.IncreaseRotation(Vector3(0, 1, 0), currentTurnSpeed * dt);
-		//transform.IncreasePosition(currentRunSpeed * dt);
 
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::SPACE)) {
 			if (transform.GetPosition().y < -10) 
@@ -115,10 +162,11 @@ public:
 
 	int GetPoints() { return points; }
 protected:
-	float runSpeed = 30;	// unit: m/s
-	float turnSpeed = 10.0f; // unit: degrees/s
+	float runSpeed = 50;	// unit: m/s
+	float turnSpeed = 100.0f; // unit: degrees/s
 	float currentRunSpeed = 0.0f; 
 	float currentTurnSpeed = 0.0f;
 	int points = 0;
 	float powerUpTime = 0;
+	bool forceControl = false;
 };
