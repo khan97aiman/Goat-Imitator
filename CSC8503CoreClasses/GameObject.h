@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "CollisionVolume.h"
 #include "Layer.h"
+#include <Ray.h>
 
 using std::vector;
 
@@ -59,7 +60,7 @@ namespace NCL::CSC8503 {
 			layer = l;
 		}
 
-		const Layer GetLayer() {
+		Layer GetLayer() const {
 			return layer;
 		}
 
@@ -88,6 +89,8 @@ namespace NCL::CSC8503 {
 		}
 
 		virtual void Update(float dt) {}
+		bool Raycast(RayCollision& closestCollision, GameObject* target) const;
+
 
 	protected:
 		Transform			transform;

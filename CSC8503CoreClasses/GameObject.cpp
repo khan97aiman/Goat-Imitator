@@ -3,6 +3,7 @@
 #include "PhysicsObject.h"
 #include "RenderObject.h"
 #include "NetworkObject.h"
+#include <Debug.h>
 
 using namespace NCL::CSC8503;
 
@@ -48,4 +49,49 @@ void GameObject::UpdateBroadphaseAABB() {
 		Vector3 halfSizes = ((OBBVolume&)*boundingVolume).GetHalfDimensions();
 		broadphaseAABB = mat * halfSizes;
 	}
+}
+
+bool GameObject::Raycast(RayCollision& closestCollision, GameObject* target) const {
+
+	std::vector<int> activeLayers;
+	int layer = 0; // start at bit index 0
+
+	int layerMask = COLLISION_LAYER_MASK.at(this->GetLayer());
+	
+	while (layerMask != 0) { // If the number is 0, no bits are set
+
+		// check if the bit at the current index 0 is set
+		if ((layerMask & 1) == 1) {
+			activeLayers.push_back(layer);
+		}
+
+		// advance to the next bit position to check
+		layerMask = layerMask >> 1; // shift all bits one position to the right
+		layer = layer + 1;              // so we are now looking at the next index.
+	}
+	
+	//checking if this object can interact with the target game object
+	if (!(std::count(activeLayers.begin(), activeLayers.end(), (int)target->GetLayer())) && layerMask) {
+		return false;
+	}
+	if (!target->GetBoundingVolume() || !this->GetBoundingVolume()) { //objects might not be collideable etc...
+		return false;
+	}
+
+	RayCollision thisCollision;
+	Ray r(transform.GetPosition(), target->GetTransform().GetPosition() - transform.GetPosition());
+	Ray r2(transform.GetPosition(), transform.GetPosition() - target->GetTransform().GetPosition());
+
+	if (CollisionDetection::RayIntersection(r, *target, closestCollision)) {
+		//closestCollision.node = target;
+		Debug::DrawLine(r.GetPosition(), closestCollision.collidedAt, Vector4(0, 0, 1, 1), 10);
+		return true;
+	}
+	if (CollisionDetection::RayIntersection(r2, *target, closestCollision)) {
+		//closestCollision.node = target;
+		Debug::DrawLine(r2.GetPosition(), closestCollision.collidedAt, Vector4(0, 0, 1, 1), 10);
+		return true;
+	}
+
+	return false;
 }

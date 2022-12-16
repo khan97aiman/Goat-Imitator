@@ -80,7 +80,7 @@ public:
 		GetPhysicsObject()->AddForce(direction.Normalised() * 5);
 	}
 	void Update(float dt) {
-		Debug::DrawLine(currentPos, nextPos, Vector4(1, 0, 0, 1), 10);
+		//Debug::DrawLine(currentPos, nextPos, Vector4(1, 0, 0, 1), 10);
 		if (prevPlayerPosition != grid->GetGridPosition(player->GetTransform().GetPosition())) {
 			prevPlayerPosition = grid->GetGridPosition(player->GetTransform().GetPosition());
 			outPath.Clear();
@@ -89,6 +89,8 @@ public:
 			outPath.PopWaypoint(nextPos);
 		}
 		StateGameObject::Update(dt);
+		/*RayCollision rayCollision;
+		std::cout << this->Raycast(rayCollision, player) << std::endl;*/
 	}
 	~Enemy() {}
 protected:
