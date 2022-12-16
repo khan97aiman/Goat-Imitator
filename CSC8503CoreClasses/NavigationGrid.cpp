@@ -2,6 +2,7 @@
 #include "Assets.h"
 #include "Wall.h"
 #include "Coin.h"
+#include "PowerUp.h"
 
 #include <fstream>
 
@@ -50,6 +51,9 @@ NavigationGrid::NavigationGrid(const std::string&filename, std::map<std::string,
 			}
 			else if (type == 'e') {
 				enemyPositions.emplace_back(n.position);
+			}
+			else if (type == 'p') {
+				world->AddGameObject(new PowerUp(n.position, meshes.at("capsuleMesh"), textures.at("coinTex"), shader));
 			}
 		}
 	}

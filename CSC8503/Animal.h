@@ -79,6 +79,10 @@ public:
 				physicsObject->AddForce(Vector3(0, 100, 0));
 		}
 		
+		if (powerUpTime > 0) {
+			powerUpTime -= dt;
+		}
+
 		/*renderObject->frameTime -= dt;
 		while (renderObject->frameTime < 0.0f) {
 			renderObject->currentFrame = (renderObject->currentFrame + 1) % renderObject->animation->GetFrameCount();
@@ -90,12 +94,23 @@ public:
 		if ((otherObject->IsActive() && otherObject->GetName() == "Coin")) {
 			points++;
 		}
+
+		if ((otherObject->IsActive() && otherObject->GetName() == "PowerUp")) {
+			powerUpTime = 5;
+		}
 	}
 
 	virtual void OnCollisionEnd(GameObject* otherObject) {
 		if (otherObject->GetName() == "Coin") {
 			otherObject->SetActive(false);
 		}
+		if (otherObject->GetName() == "PowerUp") {
+			otherObject->SetActive(false);
+		}
+	}
+
+	bool IsInPowerUpState() {
+		return powerUpTime > 0;
 	}
 
 	int GetPoints() { return points; }
@@ -105,4 +120,5 @@ protected:
 	float currentRunSpeed = 0.0f; 
 	float currentTurnSpeed = 0.0f;
 	int points = 0;
+	float powerUpTime = 0;
 };

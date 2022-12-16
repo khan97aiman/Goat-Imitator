@@ -13,6 +13,7 @@
 #include <State.h>
 #include <StateMachine.h>
 #include <StateTransition.h>
+#include "Animal.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -21,7 +22,7 @@ using namespace Rendering;
 
 class Enemy : public StateGameObject {
 public:
-	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, NavigationGrid* grid, GameObject* player) : StateGameObject() {
+	Enemy(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, ShaderBase* shader, NavigationGrid* grid, Animal* player) : StateGameObject() {
 		name = "Enemy";
 		float meshSize = 10.0f;
 		float inverseMass = 0.5f;
@@ -59,6 +60,10 @@ public:
 			//std::cout << "In idle state" << std::endl;
 		});
 
+		State* dumbState = new State([&](float dt)-> void {
+			//std::cout << "In idle state" << std::endl;
+		});
+
 		State* deadState = new State([&](float dt)-> void {
 			isActive = false;
 			BeingDead(dt);
@@ -73,6 +78,7 @@ public:
 
 		stateMachine->AddState(chasePlayer);
 		//stateMachine->AddState(shootPlayer);
+		stateMachine->AddState(dumbState);
 		stateMachine->AddState(idleState);
 		stateMachine->AddState(deadState);
 		stateMachine->AddState(respawnState);
@@ -89,6 +95,16 @@ public:
 			}
 			return false;
 		}));
+		/*stateMachine->AddTransition(new StateTransition(chasePlayer, dumbState, [&]()-> bool {
+			return dynamic_cast<Animal*>(player)->IsInPowerUpState();
+		}));
+		stateMachine->AddTransition(new StateTransition(idleState, dumbState, [&]()-> bool {
+			return dynamic_cast<Animal*>(player)->IsInPowerUpState();
+		}));
+
+		stateMachine->AddTransition(new StateTransition(dumbState, chasePlayer, [&]()-> bool {
+			return !dynamic_cast<Animal*>(player)->IsInPowerUpState();
+		}));*/
 		stateMachine->AddTransition(new StateTransition(chasePlayer, deadState, [&]()-> bool {
 			return health == 0;
 		}));
