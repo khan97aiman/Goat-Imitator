@@ -61,7 +61,7 @@ TutorialGame::TutorialGame()	{
 	});
 	State* lost = new State([&](float dt)-> void {
 		Debug::Print("YOU LOST, LOSER!", Vector2(35, 30), Vector4(1, 0, 0, 1));
-		Debug::Print("Final Score: " + player->GetPoints(), Vector2(35, 45), Vector4(0, 0, 1, 1));
+		Debug::Print("Final Score: " + std::to_string(player->GetPoints()), Vector2(35, 45), Vector4(0, 0, 1, 1));
 		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 		renderer->Render();
@@ -69,7 +69,7 @@ TutorialGame::TutorialGame()	{
 	});
 	State* won = new State([&](float dt)-> void {
 		Debug::Print("YOU WON, YAYY!", Vector2(35, 30), Vector4(1, 0, 1, 1));
-		Debug::Print("Final Score: " + player->GetPoints(), Vector2(35, 45), Vector4(0, 0, 1, 1));
+		Debug::Print("Final Score: " + std::to_string(player->GetPoints()), Vector2(35, 45), Vector4(0, 0, 1, 1));
 		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 		renderer->Render();
@@ -101,10 +101,10 @@ TutorialGame::TutorialGame()	{
 		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
 	}));
 	menuSystem.AddTransition(new StateTransition(running, lost, [&]()-> bool {
-		return remainingTime == 0;
+		return remainingTime <= 0;
 	}));
 	menuSystem.AddTransition(new StateTransition(running, won, [&]()-> bool { //TODO
-		return false; 
+		return player->GetPoints() == 10; 
 	}));
 	menuSystem.AddTransition(new StateTransition(won, newGame, [&]()-> bool {
 		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
@@ -334,7 +334,7 @@ void TutorialGame::InitWorld() {
 	if (!hedgeMaze) delete hedgeMaze;
 
 	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
-	remainingTime = 30;
+	remainingTime = 60;
 	InitGameExamples();
 	InitDefaultFloor();
 	//testStateObject = AddStateObjectToWorld(Vector3(15, 10, 0));
