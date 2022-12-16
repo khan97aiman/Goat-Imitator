@@ -27,7 +27,7 @@ If time runs out, game is over.
 
     Player can interact with Collectibles, Enemy and Static Objects.  
     Enemy can only interact with Player Static Objects.  
-    
+
     Therefore, Enemy is not able to collect any collectibles because `BroadPhase() in PhysicsSystem.cpp` also checks whether or not the 2 potential colliding objects can interact with each other using the bit mask given by the layer an object has.
 
 6. Raycast Functionality (Player's Shooting Ability)
@@ -41,6 +41,12 @@ If time runs out, game is over.
     5. Respawn State (Enemy respawns from its original in this state)
 10. Enemy will recalculate the path to the player only when the player moves its position from one grid cell to another
 11. Spatial Acceleration Structure Used
+12. Also Added Networks
+    1. Client can connect to server
+    2. Client can send packets
+    3. Client can receive packets
+    4. Server can send packets
+    5. Server can receive packets
 
 # Collision Detection:
 Following collision detection functionality has been implemented:
