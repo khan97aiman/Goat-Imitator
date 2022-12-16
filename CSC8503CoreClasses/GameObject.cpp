@@ -78,20 +78,12 @@ bool GameObject::Raycast(RayCollision& closestCollision, GameObject* target) con
 		return false;
 	}
 
-	RayCollision thisCollision;
-	Ray r(transform.GetPosition(), target->GetTransform().GetPosition() - transform.GetPosition());
-	Ray r2(transform.GetPosition(), transform.GetPosition() - target->GetTransform().GetPosition());
+	Ray r(transform.GetPosition(), transform.GetPosition() - target->GetTransform().GetPosition().Normalised());
 
 	if (CollisionDetection::RayIntersection(r, *target, closestCollision)) {
-		//closestCollision.node = target;
+		closestCollision.node = target;
 		Debug::DrawLine(r.GetPosition(), closestCollision.collidedAt, Vector4(0, 0, 1, 1), 10);
 		return true;
 	}
-	if (CollisionDetection::RayIntersection(r2, *target, closestCollision)) {
-		//closestCollision.node = target;
-		Debug::DrawLine(r2.GetPosition(), closestCollision.collidedAt, Vector4(0, 0, 1, 1), 10);
-		return true;
-	}
-
 	return false;
 }

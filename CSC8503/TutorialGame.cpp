@@ -61,7 +61,7 @@ TutorialGame::TutorialGame()	{
 	});
 	State* lost = new State([&](float dt)-> void {
 		Debug::Print("YOU LOST, LOSER!", Vector2(35, 30), Vector4(1, 0, 0, 1));
-		Debug::Print("Final Score: " + std::to_string(player->GetPoints()), Vector2(35, 45), Vector4(0, 0, 1, 1));
+		Debug::Print("Final Score: " + std::to_string(player->GetPoints()), Vector2(35, 45), Vector4(1, 1, 1, 1));
 		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 		renderer->Render();
@@ -69,7 +69,7 @@ TutorialGame::TutorialGame()	{
 	});
 	State* won = new State([&](float dt)-> void {
 		Debug::Print("YOU WON, YAYY!", Vector2(35, 30), Vector4(1, 0, 1, 1));
-		Debug::Print("Final Score: " + std::to_string(player->GetPoints()), Vector2(35, 45), Vector4(0, 0, 1, 1));
+		Debug::Print("Final Score: " + std::to_string(player->GetPoints()), Vector2(35, 45), Vector4(1, 1, 1, 1));
 		Debug::Print("Press N to Start a New Game", Vector2(25, 60), Vector4(1, 1, 1, 1));
 		Debug::Print("Press ESC to Quit Playing", Vector2(25, 75), Vector4(1, 1, 1, 1));
 		renderer->Render();
@@ -179,11 +179,11 @@ void TutorialGame::UpdateGame(float dt) {
 	world->GetMainCamera()->UpdateCamera(dt);
 	world->GetMainCamera()->CalculateThirdPersonCameraPosition(player->GetTransform().GetPosition(), player->GetTransform().GetOrientation());
 
-	for (int i = 1; i < testNodes.size(); ++i) {
+	/*for (int i = 1; i < testNodes.size(); ++i) {
 		Vector3 a = testNodes[i - 1];
 		Vector3 b = testNodes[i];
 		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
-	}
+	}*/
 
 	Debug::Print("Remaining Time: " + std::to_string(remainingTime), Vector2(5, 5), Vector4(1, 0, 0, 1));
 	Debug::Print("P: Pause", Vector2(5, 90), Vector4(1, 1, 1, 1));
@@ -334,7 +334,7 @@ void TutorialGame::InitWorld() {
 	if (!hedgeMaze) delete hedgeMaze;
 
 	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
-	remainingTime = 60;
+	remainingTime = 2 * 60;
 	InitGameExamples();
 	InitDefaultFloor();
 	//testStateObject = AddStateObjectToWorld(Vector3(15, 10, 0));
