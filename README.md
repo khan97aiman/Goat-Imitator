@@ -25,11 +25,11 @@ If time runs out, game is over.
     3. Enemy
     4. Static Objects (Walls and Floor)
 
-    Player can interact with Collectibles, Enemy and Static Objects
-    Enemy can only interact with Player Static Objects
+    Player can interact with Collectibles, Enemy and Static Objects. __
+    Enemy can only interact with Player Static Objects. __
 
     Therefore, Enemy is not able to collect any collectibles because `BroadPhase() in PhysicsSystem.cpp` also checks whether or not the 2 potential colliding objects can interact with each other using the bit mask given by the layer an object has.
-    
+
 6. Raycast Functionality (Player's Shooting Ability)
 7. Projection/Impulse Collision Resolution Method Used to resolve collision
 8. Coefficient of Restitution formed by combined elasticity values of the colliding objects
