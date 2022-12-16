@@ -33,8 +33,8 @@ TutorialGame::TutorialGame()	{
 
 
 	State* splash = new State([&](float dt)-> void {
-		Debug::Print("Collect 10 coins, then go to Don Duck for survival", Vector2(5, 30), Vector4(1, 1, 0, 1));
-		Debug::Print("Going to Don without enough coins will get you killed", Vector2(0, 45), Vector4(1, 1, 0, 1));
+		Debug::Print("Reach end of the maze", Vector2(30, 30), Vector4(1, 1, 0, 1));
+		Debug::Print("The door will only open if you have 10 coins", Vector2(10, 45), Vector4(1, 1, 0, 1));
 		Debug::Print("Hide from enemies or shoot them", Vector2(25, 60), Vector4(1, 1, 0, 1));
 		Debug::Print("Press Space to Continue", Vector2(30, 75), Vector4(1, 0, 0, 1));
 		renderer->Render();
@@ -104,7 +104,7 @@ TutorialGame::TutorialGame()	{
 		return remainingTime <= 0;
 	}));
 	menuSystem.AddTransition(new StateTransition(running, won, [&]()-> bool { //TODO
-		return player->GetPoints() == 10; 
+		return door->IsDoorOpen() && player->HasPlayerReachedEndOfMaze();
 	}));
 	menuSystem.AddTransition(new StateTransition(won, newGame, [&]()-> bool {
 		return Window::GetKeyboard()->KeyPressed(KeyboardKeys::N);
@@ -140,6 +140,7 @@ void TutorialGame::InitialiseAssets() {
 	textures.insert(std::make_pair("coinTex", renderer->LoadTexture("coin.png")));
 	textures.insert(std::make_pair("floorTex", renderer->LoadTexture("ground.png")));
 	textures.insert(std::make_pair("goatTex", renderer->LoadTexture("goat1.jpg")));
+	textures.insert(std::make_pair("doorTex", renderer->LoadTexture("door.jpg")));
 
 
 	shaders.insert(std::make_pair("basicShader", renderer->LoadShader("scene.vert", "scene.frag")));
@@ -335,7 +336,7 @@ void TutorialGame::InitWorld() {
 
 	//InitMixedGridWorld(15, 15, 3.5f, 3.5f);
 	remainingTime = 2 * 60;
-	InitGameExamples();
+	//InitGameExamples();
 	InitDefaultFloor();
 	//testStateObject = AddStateObjectToWorld(Vector3(15, 10, 0));
 	AddNavigationGrid();
@@ -431,8 +432,8 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 	return cube;
 }
 
-GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
-	player = new Animal(position, meshes.at("goatMesh"), textures.at("goatTex"), nullptr, nullptr, shaders.at("basicShader"));
+GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position, NavigationGrid* grid) {
+	player = new Animal(position, meshes.at("goatMesh"), textures.at("goatTex"), nullptr, nullptr, shaders.at("basicShader"), grid);
 	world->AddGameObject(player);
 	return player;
 }
@@ -441,13 +442,21 @@ void TutorialGame::AddEnemyToWorld(const Vector3& position, NavigationGrid* grid
 	world->AddGameObject(new Enemy(position, meshes.at("enemyMesh"), textures.at("coinTex"), shaders.at("basicShader"), grid, player));
 }
 
+void TutorialGame::AddDoorToWorld(const Vector3& position) {
+	door = new Door(position, meshes.at("cubeMesh"), textures.at("doorTex"), shaders.at("basicShader"), player);
+	world->AddGameObject(door);
+}
+
 //void TutorialGame::AddCoinsToWorld(const Vector3& position) {
 //	world->AddGameObject(new Coin(position, meshes.at("coinMesh"), textures.at("coinTex"), shaders.at("basicShader")));
 //}
 
 void TutorialGame::AddNavigationGrid() {
 	hedgeMaze = new NavigationGrid("TestGrid2.txt", meshes, textures, shaders.at("basicShader"), world);
-	player->GetTransform().SetPosition(hedgeMaze->GetStartPosition());
+	//player->GetTransform().SetPosition(hedgeMaze->GetStartPosition());
+	player = new Animal(hedgeMaze->GetStartPosition(), meshes.at("goatMesh"), textures.at("goatTex"), nullptr, nullptr, shaders.at("basicShader"), hedgeMaze);
+	world->AddGameObject(player);
+	AddDoorToWorld(hedgeMaze->GetEndPosition());
 
 	vector<Vector3> enemyPositions = hedgeMaze->GetEnemyPositions();
 	for (const auto& pos : enemyPositions) {
@@ -497,7 +506,7 @@ void TutorialGame::InitDefaultFloor() {
 }
 
 void TutorialGame::InitGameExamples() {
-	AddPlayerToWorld(Vector3(15, 5, 0));
+	//AddPlayerToWorld(Vector3(15, 5, 0));
 	//AddCoinsToWorld(Vector3(5, -15, 0));
 }
 

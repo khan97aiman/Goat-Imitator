@@ -55,6 +55,9 @@ NavigationGrid::NavigationGrid(const std::string&filename, std::map<std::string,
 			else if (type == 'p') {
 				world->AddGameObject(new PowerUp(n.position, meshes.at("capsuleMesh"), textures.at("coinTex"), shader));
 			}
+			else if (type == 'f') {
+				endPosition = n.position;
+			}
 		}
 	}
 	

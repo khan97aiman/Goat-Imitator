@@ -8,6 +8,7 @@
 #include <MeshMaterial.h>
 #include <PhysicsObject.h>
 #include <MeshAnimation.h>
+#include <NavigationGrid.h>
 
 using namespace NCL;
 using namespace CSC8503;
@@ -16,7 +17,7 @@ using namespace Rendering;
 
 class Animal : public GameObject {
 public:
-	Animal(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, MeshMaterial* material, MeshAnimation* animation, ShaderBase* shader) : GameObject() {
+	Animal(const Vector3& position, MeshGeometry* mesh, TextureBase* texture, MeshMaterial* material, MeshAnimation* animation, ShaderBase* shader, NavigationGrid* grid) : GameObject() {
 		name = "Player";
 		float meshSize = 3.0f;
 		float inverseMass = 0.5f;
@@ -43,6 +44,7 @@ public:
 		layer = Layer::Player;
 		//renderObject->animation = animation;
 		transform.IncreaseRotation(Vector3(0, 1, 0), 180);
+		this->grid = grid;
 	}
 	void Update(float dt) {
 
@@ -160,6 +162,10 @@ public:
 		return powerUpTime > 0;
 	}
 
+	bool HasPlayerReachedEndOfMaze() {
+		return grid->GetGridPosition(transform.GetPosition()) == grid->GetEndPosition();
+	}
+
 	int GetPoints() { return points; }
 protected:
 	float runSpeed = 50;	// unit: m/s
@@ -169,4 +175,5 @@ protected:
 	int points = 0;
 	float powerUpTime = 0;
 	bool forceControl = false;
+	NavigationGrid* grid;
 };

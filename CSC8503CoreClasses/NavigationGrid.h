@@ -43,6 +43,7 @@ namespace NCL {
 
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
 			Vector3 GetStartPosition() { return startPosition; }
+			Vector3 GetEndPosition() { return endPosition; }
 			vector<Vector3> GetEnemyPositions() { return enemyPositions; }
 			Vector3 GetGridPosition(const Vector3& worldPos);
 
@@ -55,6 +56,7 @@ namespace NCL {
 			int gridWidth;
 			int gridHeight;
 			Vector3 startPosition;
+			Vector3 endPosition;
 			vector<Vector3> enemyPositions;
 			GridNode* allNodes;
 		};

@@ -11,6 +11,7 @@
 #include "Animal.h"
 #include <NavigationGrid.h>
 #include <StateMachine.h>
+#include "Door.h"
 
 //enum class GameState {
 //	SPLASH,
@@ -59,8 +60,10 @@ namespace NCL {
 			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
 			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
 
-			GameObject* AddPlayerToWorld(const Vector3& position);
+			GameObject* AddPlayerToWorld(const Vector3& position, NavigationGrid* grid);
 			void AddEnemyToWorld(const Vector3& position, NavigationGrid* grid);
+			void AddDoorToWorld(const Vector3& position);
+
 			//void AddCoinsToWorld(const Vector3& position);
 			void AddNavigationGrid();
 
@@ -96,9 +99,12 @@ namespace NCL {
 
 			GameObject* objClosest = nullptr;
 			Animal* player = nullptr;
+			Door* door = nullptr;
+
 			//GameState gameState = GameState::SPLASH;
 			float remainingTime = 30;
 			vector <Vector3 > testNodes;
+
 		public:
 			StateMachine menuSystem;
 			//StateGameObject* AddStateObjectToWorld(const Vector3& position);
