@@ -95,21 +95,21 @@ public:
 			}
 			return false;
 		}));
-		/*stateMachine->AddTransition(new StateTransition(chasePlayer, dumbState, [&]()-> bool {
-			return dynamic_cast<Animal*>(player)->IsInPowerUpState();
+		stateMachine->AddTransition(new StateTransition(chasePlayer, dumbState, [&]()-> bool {
+			return IsPlayerInPowerUpState();
 		}));
 		stateMachine->AddTransition(new StateTransition(idleState, dumbState, [&]()-> bool {
-			return dynamic_cast<Animal*>(player)->IsInPowerUpState();
+			return IsPlayerInPowerUpState();
 		}));
 
 		stateMachine->AddTransition(new StateTransition(dumbState, chasePlayer, [&]()-> bool {
-			return !dynamic_cast<Animal*>(player)->IsInPowerUpState();
-		}));*/
+			return !IsPlayerInPowerUpState();
+		}));
 		stateMachine->AddTransition(new StateTransition(chasePlayer, deadState, [&]()-> bool {
-			return health == 0;
+			return health <= 0;
 		}));
 		stateMachine->AddTransition(new StateTransition(idleState, deadState, [&]()-> bool {
-			return health == 0;
+			return health <= 0;
 		}));
 		stateMachine->AddTransition(new StateTransition(deadState, respawnState, [&]()-> bool {
 			return timer > 3;
@@ -143,10 +143,13 @@ public:
 		timer += dt;
 	}
 
+	bool IsPlayerInPowerUpState() {
+		return player->IsInPowerUpState();
+	}
 	~Enemy() {}
 protected:
 	NavigationGrid* grid;
-	GameObject* player;
+	Animal* player;
 	Vector3 currentPos;
 	Vector3 nextPos;
 	Vector3 prevPlayerPosition;
