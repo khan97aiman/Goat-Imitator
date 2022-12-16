@@ -124,6 +124,8 @@ public:
 	}
 	void Update(float dt) {
 		//Debug::DrawLine(currentPos, nextPos, Vector4(1, 0, 0, 1), 10);
+		RayCollision rayCollision;
+		std::cout << this->Raycast(rayCollision, player) << std::endl;
 		if (prevPlayerPosition != grid->GetGridPosition(player->GetTransform().GetPosition())) {
 			prevPlayerPosition = grid->GetGridPosition(player->GetTransform().GetPosition());
 			outPath.Clear();
@@ -132,8 +134,6 @@ public:
 			outPath.PopWaypoint(nextPos);
 		}
 		StateGameObject::Update(dt);
-		/*RayCollision rayCollision;
-		std::cout << this->Raycast(rayCollision, player) << std::endl;*/
 	}
 	void DecreaseHealth() {
 		health--;

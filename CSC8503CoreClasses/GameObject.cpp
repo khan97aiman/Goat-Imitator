@@ -78,7 +78,7 @@ bool GameObject::Raycast(RayCollision& closestCollision, GameObject* target) con
 		return false;
 	}
 
-	Ray r(transform.GetPosition(), transform.GetPosition() - target->GetTransform().GetPosition().Normalised());
+	Ray r(transform.GetPosition(), (transform.GetPosition() - target->GetTransform().GetPosition()).Normalised());
 
 	if (CollisionDetection::RayIntersection(r, *target, closestCollision)) {
 		closestCollision.node = target;
