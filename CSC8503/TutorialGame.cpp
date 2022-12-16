@@ -189,6 +189,19 @@ void TutorialGame::UpdateGame(float dt) {
 	Debug::Print("P: Pause", Vector2(5, 90), Vector4(1, 1, 1, 1));
 	Debug::Print("Coins Collected: X" + std::to_string(player->GetPoints()), Vector2(5, 95), Vector4(1, 1, 0, 1));
 
+	if (Window::GetMouse()->ButtonPressed(NCL::MouseButtons::LEFT)) {
+		Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
+		RayCollision closestCollision;
+		if (world->Raycast(ray, closestCollision, true, NULL)) {
+			selectionObject = (GameObject*)closestCollision.node;
+			if (selectionObject->GetName() == "Enemy") {
+				dynamic_cast<Enemy*>(selectionObject)->DecreaseHealth();
+			}
+			//selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+			Debug::DrawLine(player->GetTransform().GetPosition(), closestCollision.collidedAt, Vector4(0, 1, 0, 1), 0.5);
+		}
+	}
+
 	renderer->Render();
 	world->UpdateWorld(dt);
 	renderer->Update(dt);

@@ -26,7 +26,7 @@ public:
 		float meshSize = 10.0f;
 		float inverseMass = 0.5f;
 
-
+		startPos = position;
 		AABBVolume* volume = new AABBVolume(Vector3(0.25f, 0.7f, 0.25f) * meshSize);
 		SetBoundingVolume((CollisionVolume*)volume);
 
@@ -58,9 +58,24 @@ public:
 		State* idleState = new State([&](float dt)-> void {
 			//std::cout << "In idle state" << std::endl;
 		});
+
+		State* deadState = new State([&](float dt)-> void {
+			isActive = false;
+			BeingDead(dt);
+		});
+
+		State* respawnState = new State([&](float dt)-> void {
+			isActive = true;
+			transform.SetPosition(startPos);
+			timer = 0;
+			health = 10;
+		});
+
 		stateMachine->AddState(chasePlayer);
 		//stateMachine->AddState(shootPlayer);
 		stateMachine->AddState(idleState);
+		stateMachine->AddState(deadState);
+		stateMachine->AddState(respawnState);
 
 		stateMachine->AddTransition(new StateTransition(chasePlayer, idleState, [&]()-> bool {
 			return Vector3(nextPos - transform.GetPosition()).Length() < 10;
@@ -73,6 +88,18 @@ public:
 				return true;
 			}
 			return false;
+		}));
+		stateMachine->AddTransition(new StateTransition(chasePlayer, deadState, [&]()-> bool {
+			return health == 0;
+		}));
+		stateMachine->AddTransition(new StateTransition(idleState, deadState, [&]()-> bool {
+			return health == 0;
+		}));
+		stateMachine->AddTransition(new StateTransition(deadState, respawnState, [&]()-> bool {
+			return timer > 3;
+		}));
+		stateMachine->AddTransition(new StateTransition(respawnState, chasePlayer, [&]()-> bool {
+			return true;
 		}));
 	}
 	void Move(float dt) {
@@ -92,6 +119,14 @@ public:
 		/*RayCollision rayCollision;
 		std::cout << this->Raycast(rayCollision, player) << std::endl;*/
 	}
+	void DecreaseHealth() {
+		health--;
+	}
+
+	void BeingDead(float dt) {
+		timer += dt;
+	}
+
 	~Enemy() {}
 protected:
 	NavigationGrid* grid;
@@ -100,4 +135,7 @@ protected:
 	Vector3 nextPos;
 	Vector3 prevPlayerPosition;
 	NavigationPath outPath;
+	int health = 10;
+	Vector3 startPos;
+	float timer = 0;
 };
